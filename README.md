@@ -1,254 +1,342 @@
-# 🏨 Hotel Reservation System
-
 <div align="center">
 
-![Hero](https://capsule-render.vercel.app/api?type=waving&color=FF6B6B&height=150&section=header&text=Hotel%20Reservation%20System&fontSize=40&animation=twinkling)
+# 🏨 Hotel Reservation System
 
-![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&duration=3200&pause=1300&color=FFFFFF&center=true&width=820&lines=Welcome+to+Hotel+Reservation+System;Book+Your+Perfect+Stay+in+Seconds)
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=32&duration=2800&pause=2000&color=FF6B6B&center=true&vCenter=true&width=600&lines=Welcome+to+Hotel+Reservation+System;Book+Your+Perfect+Stay!;Year+2+SE+Project" alt="Typing SVG" />
 
-<p align="center">
-  <a href="https://github.com/it24102732/Hotel-Reservation-System"><img alt="repo size" src="https://img.shields.io/github/repo-size/it24102732/Hotel-Reservation-System?style=for-the-badge&color=FF6B6B"></a>
-  <a href="https://github.com/it24102732/Hotel-Reservation-System/stargazers"><img alt="stars" src="https://img.shields.io/github/stars/it24102732/Hotel-Reservation-System?style=for-the-badge&color=FFD93D"></a>
-  <a href="https://github.com/it24102732/Hotel-Reservation-System/network"><img alt="forks" src="https://img.shields.io/github/forks/it24102732/Hotel-Reservation-System?style=for-the-badge&color=6BCB77"></a>
-  <a href="https://github.com/it24102732/Hotel-Reservation-System/issues"><img alt="issues" src="https://img.shields.io/github/issues/it24102732/Hotel-Reservation-System?style=for-the-badge&color=4D96FF"></a>
-</p>
+[![GitHub repo size](https://img.shields.io/github/repo-size/it24102732/Hotel-Reservation-System?style=for-the-badge&color=FF6B6B)](https://github.com/it24102732/Hotel-Reservation-System)
+[![GitHub stars](https://img.shields.io/github/stars/it24102732/Hotel-Reservation-System?style=for-the-badge&color=FFD93D)](https://github.com/it24102732/Hotel-Reservation-System/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/it24102732/Hotel-Reservation-System?style=for-the-badge&color=6BCB77)](https://github.com/it24102732/Hotel-Reservation-System/network)
+[![GitHub issues](https://img.shields.io/github/issues/it24102732/Hotel-Reservation-System?style=for-the-badge&color=4D96FF)](https://github.com/it24102732/Hotel-Reservation-System/issues)
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Java-21-ED8B00?style=flat-square&logo=openjdk" /> 
-  <img src="https://img.shields.io/badge/Spring%20Boot-3.5.6-6DB33F?style=flat-square&logo=springboot" /> 
-  <img src="https://img.shields.io/badge/Thymeleaf-005F0F?style=flat-square&logo=thymeleaf" />
-  <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql" />
-  <img src="https://img.shields.io/badge/OpenHTMLToPDF-1.0.10-4B5563?style=flat-square" />
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" />
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
 </p>
+
+---
+
+### 📖 A modern hotel reservation system built as a Year 2 Semester 1 Software Engineering project
+
+[Features](#-features) • [Tech Stack](#-technology-stack) • [Installation](#-installation) • [Usage](#-usage) • [Screenshots](#-screenshots) • [Contributing](#-contributing)
 
 </div>
 
 ---
 
-A polished, full-stack hotel booking web application built as a Year 2 Software Engineering project. The backend uses Spring Boot (Java 21) and JPA; frontend uses Thymeleaf with responsive CSS and JavaScript. This README is crafted to be attractive, informative and easy to follow — with animated elements for a modern feel.
+## 🎯 Project Overview
 
-Contents
-- Quick demo
-- Key highlights
-- Beautiful features (customer & admin)
-- Tech stack & nice badges
-- Quick setup (with config template)
-- Project layout
-- How to add your own animation / GIF / Lottie fallback
-- Contributing & contact
+The **Hotel Reservation System** is a comprehensive web-based application designed to revolutionize the hotel booking experience. Built with modern technologies and best practices, this system provides an intuitive platform for customers to search, book, and manage their hotel reservations seamlessly.
 
----
+<details>
+<summary>📋 <b>Click to expand project goals</b></summary>
 
-## 🎬 Live demo (replace with your own)
+- ✅ Provide a user-friendly interface for hotel booking
+- ✅ Streamline room availability checking
+- ✅ Implement secure payment processing
+- ✅ Enable efficient booking management
+- ✅ Offer administrative controls for hotel staff
+- ✅ Demonstrate software engineering principles and best practices
 
-<p align="center">
-  <!-- Replace this GIF with your own short demo (3–8s). -->
-  <img src="https://media.giphy.com/media/3o7btNhMBytxAM6YBa/giphy.gif" alt="demo" width="820" style="border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.1)"/>
-</p>
-
-Tip: A 5–7s clip showing search → select → book → invoice gives the best impression.
+</details>
 
 ---
 
-## ✨ Key highlights
+## ✨ Features
 
-- Modern Spring Boot backend (Java 21) with JPA and MySQL
-- Server-side rendered UI using Thymeleaf for SEO & accessibility
-- Booking lifecycle: search → reserve → pay → invoice (PDF)
-- Admin dashboard: rooms, bookings, analytics and reports
-- Email notifications and PDF invoice generation (OpenHTMLToPDF)
-- Styled responsive UI + helpful client-side interactions
+<table>
+<tr>
+<td width="50%">
+
+### 👥 For Customers
+- 🔐 **User Authentication**
+  - Secure registration and login
+  - Profile management
+  - Password recovery
+
+- 🔍 **Smart Search**
+  - Filter by dates, room type, and price
+  - Real-time availability checking
+  - Advanced search options
+
+- 🛏️ **Booking Management**
+  - Easy reservation process
+  - Booking history
+  - Modification and cancellation
+
+</td>
+<td width="50%">
+
+### 👨‍💼 For Administrators
+- 📊 **Dashboard**
+  - Overview of bookings and revenue
+  - Occupancy statistics
+  - Customer insights
+
+- 🏨 **Room Management**
+  - Add/Edit/Delete rooms
+  - Set pricing and availability
+  - Room categorization
+
+- 💳 **Payment Processing**
+  - Secure payment integration
+  - Transaction history
+  - Invoice generation
+
+</td>
+</tr>
+</table>
 
 ---
 
-## 🧭 Beautiful features (quick glance)
+## 🛠️ Technology Stack
 
-Customer
-- 🔐 Secure registration & login (session-based)
-- 🔎 Smart search by date, room type, price, amenities
-- 🛏️ Simple booking flow + booking history
-- 📧 Email confirmations & booking reminders
-- 📄 Downloadable invoice (PDF)
+<div align="center">
 
-Admin
-- 📊 Dashboard with revenue & occupancy metrics
-- 🏷️ Room management (add/edit/remove)
-- 📋 Booking management & reporting
-- 🔁 Manage policies, pricing and availability
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#FF6B6B','primaryTextColor':'#fff','primaryBorderColor':'#7C0000','lineColor':'#F8B229','secondaryColor':'#006100','tertiaryColor':'#fff'}}}%%
+pie title Language Distribution
+    "Java" : 35.5
+    "HTML" : 34.8
+    "CSS" : 16.8
+    "JavaScript" : 12.9
+```
 
----
+</div>
 
-## 🛠️ Tech stack (visual)
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original-wordmark.svg" width="36" alt="java"/> Java 21 &nbsp;
-  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/spring/spring-original.svg" width="36" alt="spring"/> Spring Boot 3.5.6 &nbsp;
-  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original.svg" width="36" alt="mysql"/> MySQL &nbsp;
-  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/thymeleaf/thymeleaf-original.svg" width="36" alt="thymeleaf"/> Thymeleaf
-</p>
+| Technology | Purpose | Percentage |
+|:-----------|:--------|:----------:|
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" width="20"/> **Java** | Backend logic & server-side processing | **35.5%** |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" width="20"/> **HTML** | Structure & markup | **34.8%** |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="20"/> **CSS** | Styling & animations | **16.8%** |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="20"/> **JavaScript** | Client-side interactivity | **12.9%** |
 
 ---
 
-## 🚀 Quick start (copy-paste)
+## 🚀 Installation
 
-Prereqs: Java 21, Maven, MySQL, Git
+### Prerequisites
 
-1. Clone
+Before you begin, ensure you have the following installed:
+
+- ☕ **Java JDK** (version 8 or higher)
+- 🌐 **Apache Tomcat** or similar servlet container
+- 💾 **MySQL** or your preferred database
+- 🔧 **Maven** or **Gradle** (if applicable)
+
+### Step-by-Step Guide
+
 ```bash
+# 1️⃣ Clone the repository
 git clone https://github.com/it24102732/Hotel-Reservation-System.git
+
+# 2️⃣ Navigate to the project directory
 cd Hotel-Reservation-System
-```
 
-2. Create DB
-```sql
-CREATE DATABASE hotel_reservation_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
+# 3️⃣ Configure the database
+# Edit the database configuration file with your credentials
+# (Usually found in src/main/resources/ or WEB-INF/)
 
-3. Add configuration: create `src/main/resources/application.properties` (example below).
-
-4. Build & run
-```bash
+# 4️⃣ Build the project (if using Maven)
 mvn clean install
-mvn spring-boot:run
-# or
-java -jar target/system-0.0.1-SNAPSHOT.jar
+
+# 5️⃣ Deploy to your servlet container
+# Copy the generated WAR file to your Tomcat webapps directory
+# Or run using your IDE's built-in server
+
+# 6️⃣ Access the application
+# Open your browser and navigate to:
+# http://localhost:8080/Hotel-Reservation-System
 ```
 
-5. Open: http://localhost:8080
+<details>
+<summary>🔧 <b>Database Setup Instructions</b></summary>
+
+1. Create a new database:
+   ```sql
+   CREATE DATABASE hotel_reservation_db;
+   ```
+
+2. Import the database schema (if provided):
+   ```bash
+   mysql -u username -p hotel_reservation_db < database/schema.sql
+   ```
+
+3. Update connection settings in your configuration file
+
+</details>
 
 ---
 
-## ⚙️ application.properties (example)
+## 💻 Usage
 
-Create `src/main/resources/application.properties` and adapt to your environment:
+### For Customers
 
-```
-server.port=8080
-spring.datasource.url=jdbc:mysql://localhost:3306/hotel_reservation_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-spring.datasource.username=hotel_user
-spring.datasource.password=secure_password
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+1. **Registration/Login**
+   ```
+   Navigate to the homepage → Click "Sign Up" or "Login"
+   ```
 
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=false
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+2. **Search for Rooms**
+   ```
+   Enter check-in and check-out dates → Select room preferences → Click "Search"
+   ```
 
-spring.mail.host=smtp.gmail.com
-spring.mail.port=587
-spring.mail.username=your-email@gmail.com
-spring.mail.password=your-app-password
-spring.mail.properties.mail.smtp.auth=true
-spring.mail.properties.mail.smtp.starttls.enable=true
+3. **Make a Reservation**
+   ```
+   Choose a room → Fill in guest details → Proceed to payment → Confirm booking
+   ```
 
-# Security / Profiles
-spring.profiles.active=dev
-```
+4. **Manage Bookings**
+   ```
+   Go to "My Bookings" → View/Modify/Cancel reservations
+   ```
 
-Security note: Use environment variables or a secrets manager for credentials in production.
+### For Administrators
+
+1. **Access Admin Panel**
+   ```
+   Login with admin credentials → Navigate to Dashboard
+   ```
+
+2. **Manage Rooms**
+   ```
+   Go to "Room Management" → Add/Edit/Delete rooms → Set pricing
+   ```
+
+3. **View Reports**
+   ```
+   Navigate to "Reports" → View booking statistics and revenue
+   ```
 
 ---
 
-## 📁 Project layout (high level)
+## 📁 Project Structure
 
 ```
 Hotel-Reservation-System/
-├─ src/main/java/com/hotelmanagement/
-│  ├─ controllers/      # MVC controllers
-│  ├─ models/           # JPA entities
-│  ├─ repository/       # Spring Data JPA repos
-│  ├─ service/          # Business logic
-│  ├─ config/           # Security & Web config
-│  └─ HotelManagementApplication.java
-├─ src/main/resources/
-│  ├─ templates/        # Thymeleaf HTML templates
-│  ├─ static/           # CSS, JS, images
-│  └─ application.properties
-├─ database/             # SQL schema & seed data
-├─ pom.xml
-└─ README.md
+│
+├── 📂 src/
+│   ├── 📂 main/
+│   │   ├── 📂 java/              # Java source files
+│   │   │   ├── 📂 controllers/   # Servlet controllers
+│   │   │   ├── 📂 models/        # Data models
+│   │   │   ├── 📂 dao/           # Database access objects
+│   │   │   └── 📂 utils/         # Utility classes
+│   │   │
+│   │   ├── 📂 resources/         # Configuration files
+│   │   │   └── 📄 db.properties  # Database configuration
+│   │   │
+│   │   └── 📂 webapp/            # Web content
+│   │       ├── 📂 css/           # Stylesheets
+│   │       ├── 📂 js/            # JavaScript files
+│   │       ├── 📂 images/        # Image assets
+│   │       └── 📂 WEB-INF/       # Web configuration
+│   │           └── 📄 web.xml    # Deployment descriptor
+│   │
+│   └── 📂 test/                  # Test files
+│
+├── 📂 database/                  # Database scripts
+│   └── 📄 schema.sql
+│
+├── 📄 pom.xml                    # Maven configuration
+├── 📄 README.md                  # Project documentation
+└── 📄 .gitignore                 # Git ignore file
 ```
 
 ---
 
-## 🔌 Common API endpoints
+## 📸 Screenshots
 
-Authentication
-- POST /api/auth/register
-- POST /api/auth/login
+<div align="center">
 
-Rooms
-- GET /api/rooms
-- GET /api/rooms/search
-- POST /api/admin/rooms (admin only)
+### 🏠 Homepage
+![Homepage](https://via.placeholder.com/800x400/FF6B6B/FFFFFF?text=Add+Your+Homepage+Screenshot)
 
-Bookings
-- POST /api/bookings
-- GET /api/bookings/{id}
-- GET /api/users/{id}/bookings
+### 🔍 Search & Booking
+![Search](https://via.placeholder.com/800x400/4D96FF/FFFFFF?text=Add+Your+Search+Screenshot)
 
-Admin
-- GET /api/admin/dashboard
-- GET /api/admin/reports
+### 📊 Admin Dashboard
+![Dashboard](https://via.placeholder.com/800x400/6BCB77/FFFFFF?text=Add+Your+Dashboard+Screenshot)
 
-(Adjust endpoints to match your controllers; add docs if you have a Swagger/OpenAPI setup.)
+</div>
+
+> 💡 **Tip:** Replace the placeholder images above with actual screenshots of your application!
 
 ---
 
-## 🎨 Make the README even more beautiful (animations & GIFs)
+## 🎨 Key Highlights
 
-Tips to add attractive motion:
-1. Typing header — already included (readme-typing-svg).
-2. Animated hero — use Capsule Render (used above) for an animated banner.
-3. Demo GIF — replace the placeholder GIF with a short 4–8s screen recording.
-   - Record with OBS/QuickTime/Peek; convert & optimize with ffmpeg:
-     ffmpeg -i demo.mp4 -vf "fps=12,scale=820:-1:flags=lanczos" -loop 0 demo.gif
-4. Lottie → GIF fallback: export Lottie as GIF (JSON won't run in README).
-5. Animated SVGs: host static SVG with SMIL/CSS animation — test on GitHub (some features are blocked).
+<div align="center">
 
-Where to store media:
-- Add small GIFs under `/docs/` or `/assets/` in repo to use relative links and track versions.
+| 🚀 Fast | 🔒 Secure | 📱 Responsive | ⚡ Real-time |
+|:-------:|:---------:|:-------------:|:-----------:|
+| Optimized performance | Data encryption | Mobile-friendly | Live updates |
+
+</div>
 
 ---
 
-## 🧪 Tests & quality
+## 🗺️ Roadmap
 
-Run unit tests:
-```bash
-mvn test
-```
-
-Generate coverage (if configured):
-```bash
-mvn jacoco:report
-```
+- [x] ✅ Basic booking functionality
+- [x] ✅ User authentication
+- [x] ✅ Admin dashboard
+- [ ] 🔄 Email notifications
+- [ ] 🔄 Payment gateway integration
+- [ ] 🔄 Multi-language support
+- [ ] 🔄 Mobile application
+- [ ] 🔄 Advanced reporting features
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork → Create branch: git checkout -b feature/awesome
-2. Commit with clear messages
-3. Push & open PR
-4. Add tests and update README/docs for big changes
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**!
 
-Please follow Java conventions and add Javadoc for public APIs.
-
----
-
-## 📬 Contact & support
-
-- Report issues: https://github.com/it24102732/Hotel-Reservation-System/issues
-- Developer: it24102732 (GitHub)
-- Email (example): it24102732@example.com
+1. 🍴 Fork the Project
+2. 🌿 Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. 💾 Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. 📤 Push to the Branch (`git push origin feature/AmazingFeature`)
+5. 🔃 Open a Pull Request
 
 ---
 
-## ❤️ Acknowledgements & license
+## 📝 License
 
-Made as a Year 2 Semester 1 Software Engineering academic project. See LICENSE for details. Thanks to course instructors, teammates and the open-source community.
+This project is part of a Year 2 Semester 1 Software Engineering academic project.
 
 ---
 
-If you'd like, I can:
-- replace the demo GIF with a crisp 5–7s walkthrough if you upload an mp4,
-- or adapt this README's headings, colors, or hero banner wording to match your personal style and branding, and then push the file to a new branch and open a PR for you.
+## 👨‍💻 Author
+
+<div align="center">
+
+**IT24102732**
+
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/it24102732)
+
+</div>
+
+---
+
+## 🙏 Acknowledgments
+
+- 🎓 University faculty and supervisors
+- 📚 Course materials and resources
+- 💡 Open-source community
+- 🤝 Project team members
+
+---
+
+<div align="center">
+
+### ⭐ If you find this project useful, please consider giving it a star!
+
+![Footer](https://capsule-render.vercel.app/api?type=waving&color=FF6B6B&height=100&section=footer)
+
+**Made with ❤️ for Software Engineering Course**
+
+</div>
