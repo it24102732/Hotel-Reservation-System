@@ -5,7 +5,7 @@
 ![Header](https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,16,18,20&height=200&section=header&text=Hotel%20Reservation%20System&fontSize=50&fontColor=fff&animation=twinkling&fontAlignY=35&desc=Your%20Perfect%20Stay%20Awaits&descAlignY=55&descSize=20)
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&duration=3000&pause=1000&color=FF6B6B&center=true&vCenter=true&multiline=true&repeat=true&width=800&height=100&lines=Welcome+to+Hotel+Reservation+System+%F0%9F%8C%9F;Book+Your+Perfect+Stay+in+Seconds+%E2%9A%A1;Spring+Boot+3.5.6+%7C+Java+21+%7C+MySQL" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&duration=3000&pause=1000&color=FF6B6B&center=true&vCenter=true&multiline=true&repeat=true&width=800&height=120&lines=Welcome+to+Hotel+Reservation+System+%F0%9F%8C%9F;Book+Your+Perfect+Stay+in+Seconds+%E2%9A%A1;Spring+Boot+3.5.6+%7C+Java+21+%7C+MySQL" alt="Typing SVG" />
 </p>
 
 [![GitHub repo size](https://img.shields.io/github/repo-size/it24102732/Hotel-Reservation-System?style=for-the-badge&logo=github&color=FF6B6B&labelColor=1a1a2e)](https://github.com/it24102732/Hotel-Reservation-System)
