@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment - Hotel Paradise</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- Base Theme Styles (Kept from your original file) --- */
+        :root {
+            --primary: #005f73;      /* Deep Teal */
+            --secondary: #daa520;    /* Gold */
+            --light: #f8f9fa;        /* Soft Off-White */
+            --dark: #212529;         /* Dark Gray/Black */
+            --success: #198754;
+            --danger: #dc3545;
+            --card-border-radius: 1rem;
+            --transition: all 0.3s ease-in-out;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+        body { font-family: var(--font-body); background-color: #f7f9fc; padding: 2rem 0; }
+        .payment-container { max-width: 1200px; margin: 0 auto; }
+        .payment-header { background-color: var(--primary); color: white; padding: 2.5rem; border-radius: var(--card-border-radius); margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0, 95, 115, 0.2); }
+        .payment-header h2 { font-family: var(--font-display); font-size: 2.5rem; }
+        .main-card { background: white; border: 1px solid #eef2f7; border-radius: var(--card-border-radius); padding: 2rem; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06); height: 100%; }
+        .card-option { border: 2px solid #eef2f7; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: var(--transition); }
+        .card-option:hover { border-color: var(--primary); transform: scale(1.02); }
+        .card-option.selected { border-color: var(--primary); background: rgba(0, 95, 115, 0.05); box-shadow: 0 4px 15px rgba(0, 95, 115, 0.1); }
+        .btn-pay { background-color: var(--secondary); color: white; border: none; padding: 1rem 2rem; border-radius: 0.75rem; font-weight: 700; font-size: 1.1rem; transition: var(--transition); width: 100%; box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3); }
+        .btn-pay:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(218, 165, 32, 0.4); color: white; }
+        .btn-pay:disabled { background: #adb5bd; cursor: not-allowed; box-shadow: none; }
+        .summary-row { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #eef2f7; }
+        .summary-row:last-child { border-bottom: none; font-size: 1.5rem; font-weight: 700; color: var(--primary); padding-top: 1rem; }
+        .insufficient-balance { color: var(--danger); font-size: 0.85rem; font-weight: 600; }
+        #newCardForm { display: none; padding-top: 1rem; }
+
+        /* --- MODIFICATION: Added styles from your new card form example --- */
+        .card-form { max-width: 570px; margin: auto; width: 100%; }
+        .card-form * { box-sizing: border-box; }
+        .card-form *:focus { outline: none; }
+        .card-form__inner { background: #fff; box-shadow: 0 30px 60px 0 rgba(90, 116, 148, 0.4); border-radius: 10px; padding: 35px; padding-top: 180px; }
+        .card-form__row { display: flex; align-items: flex-start; }
+        .card-form__col { flex: auto; margin-right: 35px; }
+        .card-form__col:last-child { margin-right: 0; }
+        .card-form__col.-cvv { max-width: 150px; }
+        .card-form__group { display: flex; align-items: flex-start; flex-wrap: wrap; }
+        .card-form__group .card-input__input { flex: 1; margin-right: 15px; }
+        .card-form__group .card-input__input:last-child { margin-right: 0; }
+        .card-form__button { width: 100%; height: 55px; background: var(--secondary); border: none; border-radius: 5px; font-size: 22px; font-weight: 500; font-family: "Source Sans Pro", sans-serif; box-shadow: 3px 10px 20px 0px rgba(35, 100, 210, 0.3); color: #fff; margin-top: 20px; cursor: pointer; }
+        .card-item { max-width: 430px; height: 270px; margin-left: auto; margin-right: auto; position: relative; z-index: 2; width: 100%; }
+        .card-item.-active .card-item__side.-front { transform: perspective(1000px) rotateY(180deg) rotateX(0deg) rotateZ(0deg); }
+        .card-item.-active .card-item__side.-back { transform: perspective(1000px) rotateY(0) rotateX(0deg) rotateZ(0deg); }
+        .card-item__focus { position: absolute; z-index: 3; border-radius: 5px; left: 0; top: 0; width: 100%; height: 100%; transition: all 0.35s cubic-bezier(0.71, 0.03, 0.56, 0.85); opacity: 0; pointer-events: none; overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.65); }
+        .card-item__focus.-active { opacity: 1; }
+        .card-item__side { border-radius: 15px; overflow: hidden; box-shadow: 0 20px 60px 0 rgba(14, 42, 90, 0.55); transform: perspective(2000px) rotateY(0deg) rotateX(0deg) rotate(0deg); transform-style: preserve-3d; transition: all 0.8s cubic-bezier(0.71, 0.03, 0.56, 0.85); backface-visibility: hidden; height: 100%; }
+        .card-item__side.-back { position: absolute; top: 0; left: 0; width: 100%; transform: perspective(2000px) rotateY(-180deg) rotateX(0deg) rotate(0deg); z-index: 2; padding: 0; height: 100%; }
+        .card-item__bg { max-width: 100%; display: block; max-height: 100%; height: 100%; width: 100%; object-fit: cover; }
+        .card-item__cover { height: 100%; background-color: #1c1d27; position: absolute; left: 0; top: 0; width: 100%; border-radius: 15px; overflow: hidden; }
+        .card-item__cover:after { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(6, 2, 29, 0.45); }
+        .card-item__top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 40px; padding: 0 10px; }
+        .card-item__chip { width: 60px; }
+        .card-item__type { height: 45px; position: relative; display: flex; justify-content: flex-end; max-width: 100px; margin-left: auto; width: 100%; }
+        .card-item__typeImg { max-width: 100%; object-fit: contain; max-height: 100%; object-position: top right; }
+        .card-item__info { color: #fff; width: 100%; max-width: calc(100% - 85px); padding: 10px 15px; font-weight: 500; display: block; cursor: pointer; }
+        .card-item__holder { opacity: 0.7; font-size: 13px; margin-bottom: 6px; }
+        .card-item__wrapper { font-family: "Source Code Pro", monospace; padding: 25px 15px; position: relative; z-index: 4; height: 100%; text-shadow: 7px 6px 10px rgba(14, 42, 90, 0.8); user-select: none; }
+        .card-item__name { font-size: 18px; line-height: 1; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; }
+        .card-item__nameItem { display: inline-block; min-width: 8px; position: relative; }
+        .card-item__number { font-weight: 500; line-height: 1; color: #fff; font-size: 27px; margin-bottom: 35px; display: inline-block; padding: 10px 15px; cursor: pointer; }
+        .card-item__numberItem { width: 16px; display: inline-block; }
+        .card-item__content { color: #fff; display: flex; align-items: flex-start; }
+        .card-item__date { flex-wrap: wrap; font-size: 18px; margin-left: auto; padding: 10px; display: inline-flex; width: 80px; white-space: nowrap; flex-shrink: 0; cursor: pointer; }
+        .card-item__dateItem { position: relative; }
+        .card-item__dateItem span { width: 22px; display: inline-block; }
+        .card-item__dateTitle { opacity: 0.7; font-size: 13px; padding-bottom: 6px; width: 100%; }
+        .card-item__band { background: rgba(0, 0, 19, 0.8); width: 100%; height: 50px; margin-top: 30px; position: relative; z-index: 2; }
+        .card-item__cvv { text-align: right; position: relative; z-index: 2; padding: 15px; }
+        .card-item__cvvTitle { padding-right: 10px; font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 5px; }
+        .card-item__cvvBand { height: 45px; background: #fff; margin-bottom: 30px; text-align: right; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: #1a3b5d; font-size: 18px; border-radius: 4px; box-shadow: 0px 10px 20px -7px rgba(32, 56, 117, 0.35); }
+        .card-list { margin-bottom: -130px; }
+        .card-input { margin-bottom: 20px; }
+        .card-input__label { font-size: 14px; margin-bottom: 5px; font-weight: 500; color: #1a3b5d; width: 100%; display: block; user-select: none; }
+        .card-input__input { width: 100%; height: 50px; border-radius: 5px; box-shadow: none; border: 1px solid #ced6e0; transition: all 0.3s ease-in-out; font-size: 18px; padding: 5px 15px; background: none; color: #1a3b5d; font-family: "Source Sans Pro", sans-serif; }
+        .card-input__input:hover, .card-input__input:focus { border-color: #3d9cff; }
+        .card-input__input:focus { box-shadow: 0px 10px 20px -13px rgba(32, 56, 117, 0.35); }
+        .card-input__input.-select { -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-size: 12px; background-position: 90% center; background-repeat: no-repeat; padding-right: 30px; }
+        .slide-fade-up-enter-active, .slide-fade-right-enter-active { transition: all 0.25s ease-in-out; transition-delay: 0.1s; position: relative; }
+        .slide-fade-up-leave-active, .slide-fade-right-leave-active { transition: all 0.25s ease-in-out; position: absolute; }
+        .slide-fade-up-enter, .slide-fade-up-leave-to { opacity: 0; transform: translateY(15px); pointer-events: none; }
+        .slide-fade-right-enter, .slide-fade-right-leave-to { opacity: 0; transform: translateX(10px) rotate(45deg); pointer-events: none; }
+    </style>
+</head>
+<body>
+
+<div class="payment-container">
+    <header class="payment-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-1">Secure Payment</h2>
+                <p class="mb-0 opacity-75">Complete your booking for Hotel Paradise</p>
+            </div>
+            <a th:href="@{/customer/dashboard}" class="btn btn-outline-light"><i class="fas fa-arrow-left me-2"></i>Back to Dashboard</a>
+        </div>
+    </header>
+
+    <main class="container-fluid">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show"><i class="fas fa-check-circle me-2"></i><span th:text="${success}"></span><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show"><i class="fas fa-exclamation-triangle me-2"></i><span th:text="${error}"></span><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="main-card">
+                    <h4 class="fw-bold mb-4 font-display"><i class="fas fa-credit-card me-2 text-primary"></i>Select Payment Method</h4>
+
+                    <div id="walletCards" th:if="${!#lists.isEmpty(walletCards)}">
+                        <h5 class="fw-semibold mb-3 text-muted">Your Saved Cards</h5>
+                        <div th:each="card : ${walletCards}" class="card-option"
+                             th:classappend="${card.isDefault} ? 'selected'"
+                             onclick="selectCard(this)"
+                             th:data-card-id="${card.id}"
+                             th:data-balance="${card.balance}"
+                             th:data-is-default="${card.isDefault}">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="selectedCard" th:id="'card' + ${card.id}" th:value="${card.id}" th:checked="${card.isDefault}">
+                                <label class="form-check-label w-100" th:for="'card' + ${card.id}">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-bold">
+                                                <i class="fas fa-credit-card me-2"></i>
+                                                <span th:text="${card.cardHolderName}"></span>
+                                                <span th:if="${card.isDefault}" class="badge bg-primary ms-2">Default</span>
+                                            </div>
+                                            <div class="text-muted small" th:text="'•••• ' + ${#strings.substring(card.cardNumber, #strings.length(card.cardNumber) - 4)}"></div>
+                                        </div>
+                                        <div th:if="${card.isDefault}" class="text-end">
+                                            <div class="text-muted small">Balance</div>
+                                            <div class="fw-bold fs-5" th:classappend="${card.balance >= booking.totalPrice} ? 'text-success' : 'text-danger'" th:text="'$' + ${#numbers.formatDecimal(card.balance, 1, 2)}"></div>
+                                            <div th:if="${card.balance < booking.totalPrice}" class="insufficient-balance mt-1"><i class="fas fa-exclamation-triangle me-1"></i>Insufficient</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <form th:action="@{/customer/payment/process-wallet-payment}" method="post" id="walletPaymentForm" class="mt-4">
+                            <input type="hidden" name="bookingId" th:value="${booking.id}"/>
+                            <input type="hidden" name="cardId" id="selectedCardId"/>
+                            <button type="submit" class="btn btn-pay" id="payWalletBtn"><i class="fas fa-lock me-2"></i>Pay $<span th:text="${#numbers.formatDecimal(booking.totalPrice, 1, 2)}"></span></button>
+                        </form>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(walletCards)}" class="alert alert-info mb-4">You have no saved cards. Please add one to proceed.</div>
+                    <div class="text-center my-4"><span class="text-muted" th:if="${!#lists.isEmpty(walletCards)}">OR</span></div>
+                    <div><button type="button" class="btn btn-outline-primary w-100" onclick="toggleNewCardForm()"><i class="fas fa-plus-circle me-2"></i>Add a New Card & Pay</button></div>
+
+                    <div id="newCardForm">
+                        <div class="card-form" id="app">
+                            <div class="card-list">
+                                <div class="card-item" :class="{ '-active' : isCardFlipped }">
+                                    <div class="card-item__side -front">
+                                        <div class="card-item__focus" :class="{'-active' : focusElementStyle }" :style="focusElementStyle" ref="focusElement"></div>
+                                        <div class="card-item__cover">
+                                            <img :src="'/assets/images/' + currentCardBackground + '.jpeg'" class="card-item__bg">
+                                        </div>
+                                        <div class="card-item__wrapper">
+                                            <div class="card-item__top">
+                                                <img src="/assets/images/chip.png" class="card-item__chip">
+                                                <div class="card-item__type">
+                                                    <transition name="slide-fade-up">
+                                                        <img :src="'/assets/images/' + getCardType + '.png'" v-if="getCardType" :key="getCardType" class="card-item__typeImg">
+                                                    </transition>
+                                                </div>
+                                            </div>
+                                            <label for="cardNumber" class="card-item__number" ref="cardNumber">
+                                                <template v-if="getCardType === 'amex'">
+                                                    <span v-for="(n, $index) in amexCardMask" :key="$index">
+                                                      <transition name="slide-fade-up">
+                                                        <div class="card-item__numberItem" v-if="$index > 4 && $index < 14 && cardNumber.length > $index && n.trim() !== ''">*</div>
+                                                        <div class="card-item__numberItem" :class="{ '-active' : n.trim() === '' }" :key="$index" v-else-if="cardNumber.length > $index">{{cardNumber[$index]}}</div>
+                                                        <div class="card-item__numberItem" :class="{ '-active' : n.trim() === '' }" v-else :key="$index + 1">{{n}}</div>
+                                                      </transition>
+                                                    </span>
+                                                </template>
+                                                <template v-else>
+                                                  <span v-for="(n, $index) in otherCardMask" :key="$index">
+                                                    <transition name="slide-fade-up">
+                                                      <div class="card-item__numberItem" v-if="$index > 4 && $index < 15 && cardNumber.length > $index && n.trim() !== ''">*</div>
+                                                      <div class="card-item__numberItem" :class="{ '-active' : n.trim() === '' }" :key="$index" v-else-if="cardNumber.length > $index">{{cardNumber[$index]}}</div>
+                                                      <div class="card-item__numberItem" :class="{ '-active' : n.trim() === '' }" v-else :key="$index + 1">{{n}}</div>
+                                                    </transition>
+                                                  </span>
+                                                </template>
+                                            </label>
+                                            <div class="card-item__content">
+                                                <label for="cardHolderName" class="card-item__info" ref="cardName">
+                                                    <div class="card-item__holder">Card Holder</div>
+                                                    <transition name="slide-fade-up">
+                                                        <div class="card-item__name" v-if="cardName.length" key="1">
+                                                            <transition-group name="slide-fade-right">
+                                                                <span class="card-item__nameItem" v-for="(n, $index) in cardName.replace(/\s\s+/g, ' ')" v-if="$index === $index" :key="$index + 1">{{n}}</span>
+                                                            </transition-group>
+                                                        </div>
+                                                        <div class="card-item__name" v-else key="2">Full Name</div>
+                                                    </transition>
+                                                </label>
+                                                <div class="card-item__date" ref="cardDate">
+                                                    <label for="expiryMonth" class="card-item__dateTitle">Expires</label>
+                                                    <label for="expiryMonth" class="card-item__dateItem">
+                                                        <transition name="slide-fade-up">
+                                                            <span v-if="cardMonth" :key="cardMonth">{{cardMonth}}</span>
+                                                            <span v-else key="2">MM</span>
+                                                        </transition>
+                                                    </label> /
+                                                    <label for="expiryYear" class="card-item__dateItem">
+                                                        <transition name="slide-fade-up">
+                                                            <span v-if="cardYear" :key="cardYear">{{String(cardYear).slice(2,4)}}</span>
+                                                            <span v-else key="2">YY</span>
+                                                        </transition>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-item__side -back">
+                                        <div class="card-item__cover">
+                                            <img :src="'/assets/images/' + currentCardBackground + '.jpeg'" class="card-item__bg">
+                                        </div>
+                                        <div class="card-item__band"></div>
+                                        <div class="card-item__cvv">
+                                            <div class="card-item__cvvTitle">CVV</div>
+                                            <div class="card-item__cvvBand">
+                                                <span v-for="(n, $index) in cardCvv" :key="$index">*</span>
+                                            </div>
+                                            <div class="card-item__type">
+                                                <img :src="'/assets/images/' + getCardType + '.png'" v-if="getCardType" class="card-item__typeImg">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form th:action="@{/customer/payment/add-card-and-pay}" method="post" class="card-form__inner" ref="newCardForm" @submit.prevent="validateAndSubmit">
+                                <input type="hidden" name="bookingId" th:value="${booking.id}">
+                                <div class="card-input">
+                                    <label for="cardHolderName" class="card-input__label">Card Holder</label>
+                                    <input type="text" id="cardHolderName" name="cardHolderName" class="card-input__input" v-model="cardName" @focus="focusInput" @blur="blurInput" data-ref="cardName" autocomplete="off" required>
+                                </div>
+                                <div class="card-input">
+                                    <label for="cardNumber" class="card-input__label">Card Number</label>
+                                    <input type="text" id="cardNumber" name="cardNumber" class="card-input__input" v-mask="generateCardNumberMask" v-model="cardNumber" @focus="focusInput" @blur="blurInput" data-ref="cardNumber" autocomplete="off" required>
+                                </div>
+                                <div class="card-form__row">
+                                    <div class="card-form__col">
+                                        <div class="card-form__group">
+                                            <label for="expiryMonth" class="card-input__label">Expiration Date</label>
+                                            <select class="card-input__input -select" id="expiryMonth" name="expiryMonth" v-model="cardMonth" @focus="focusInput" @blur="blurInput" data-ref="cardDate" required>
+                                                <option value="" disabled selected>Month</option>
+                                                <option :value="n < 10 ? '0' + n : n" v-for="n in 12" :disabled="n < minCardMonth" :key="n">{{n < 10 ? '0' + n : n}}</option>
+                                            </select>
+                                            <select class="card-input__input -select" id="expiryYear" name="expiryYear" v-model="cardYear" @focus="focusInput" @blur="blurInput" data-ref="cardDate" required>
+                                                <option value="" disabled selected>Year</option>
+                                                <option :value="$index + minCardYear" v-for="(n, $index) in 12" :key="n">{{$index + minCardYear}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="card-form__col -cvv">
+                                        <div class="card-input">
+                                            <label for="cvv" class="card-input__label">CVV</label>
+                                            <input type="text" class="card-input__input" id="cvv" name="cvv" v-mask="'####'" maxlength="4" v-model="cardCvv" @focus="flipCard(true)" @blur="flipCard(false)" autocomplete="off" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="card-form__button" type="submit">Add & Pay $<span th:text="${#numbers.formatDecimal(booking.totalPrice, 1, 2)}"></span></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="main-card">
+                    <h4 class="fw-bold mb-4 font-display"><i class="fas fa-file-invoice me-2 text-primary"></i>Booking Summary</h4>
+                    <div class="summary-row"><span>Check-in</span><strong th:text="${#temporals.format(booking.checkInDate, 'MMM dd, yyyy')}"></strong></div>
+                    <div class="summary-row"><span>Check-out</span><strong th:text="${#temporals.format(booking.checkOutDate, 'MMM dd, yyyy')}"></strong></div>
+                    <div class="summary-row"><span>Nights</span><strong th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(booking.checkInDate, booking.checkOutDate)}"></strong></div>
+                    <div class="summary-row"><span>Room Type</span><strong th:text="${booking.room != null ? booking.room.type : booking.roomType}"></strong></div>
+                    <div class="summary-row"><span class="fw-bold">Total Amount</span><span>$<span th:text="${#numbers.formatDecimal(booking.totalPrice, 1, 2)}"></span></span></div>
+                    <div class="alert alert-success mt-4 text-center"><i class="fas fa-shield-alt me-2"></i>256-bit SSL Encrypted Payment</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
+<script src='https://unpkg.com/vue-the-mask@0.11.1/dist/vue-the-mask.js'></script>
+<script th:inline="javascript">
+    const bookingTotalPrice = /*[[${booking.totalPrice}]]*/ 0;
+
+    // This is the correct logic for selecting an existing card
+    function selectCard(element) {
+        document.querySelectorAll(".card-option").forEach(e => e.classList.remove("selected"));
+        element.classList.add("selected");
+        document.getElementById("selectedCardId").value = element.dataset.cardId;
+        const balance = parseFloat(element.dataset.balance);
+        const isDefault = element.dataset.isDefault === 'true';
+        const payButton = document.getElementById("payWalletBtn");
+        if (isDefault && balance < bookingTotalPrice) {
+            payButton.disabled = true;
+            payButton.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Insufficient Balance';
+            payButton.style.background = "var(--danger)";
+        } else {
+            payButton.disabled = false;
+            payButton.innerHTML = `Pay $${bookingTotalPrice.toFixed(2)} Securely`;
+            payButton.style.background = "var(--secondary)";
+        }
+    }
+
+    function toggleNewCardForm() {
+        const newCardForm = document.getElementById("newCardForm");
+        const isHidden = newCardForm.style.display === "none" || newCardForm.style.display === "";
+        newCardForm.style.display = isHidden ? "block" : "none";
+        if (isHidden) {
+            newCardForm.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            if (!window.vueApp) {
+                initializeVueApp();
+            }
+        }
+    }
+
+    function luhnCheck(val) {
+        val = val.replace(/\s/g, '');
+        if (!/^\d+$/.test(val)) return false;
+        let sum = 0, numdigits = val.length, parity = numdigits % 2;
+        for (let i = 0; i < numdigits; i++) {
+            let digit = parseInt(val.charAt(i));
+            if (i % 2 === parity) digit *= 2;
+            if (digit > 9) digit -= 9;
+            sum += digit;
+        }
+        return (sum % 10) === 0;
+    }
+
+    // --- MODIFICATION: Replaced with the new Vue app logic ---
+    function initializeVueApp() {
+        window.vueApp = new Vue({
+            el: "#app",
+            data() {
+                return {
+                    currentCardBackground: Math.floor(Math.random() * 25 + 1),
+                    cardName: "",
+                    cardNumber: "",
+                    cardMonth: "",
+                    cardYear: "",
+                    cardCvv: "",
+                    minCardYear: new Date().getFullYear(),
+                    amexCardMask: "#### ###### #####",
+                    otherCardMask: "#### #### #### ####",
+                    isCardFlipped: false,
+                    focusElementStyle: null,
+                    isInputFocused: false
+                };
+            },
+            computed: {
+                getCardType() {
+                    let number = this.cardNumber.replace(/\s/g, '');
+                    if (/^4/.test(number)) return "visa";
+                    if (/^(34|37)/.test(number)) return "amex";
+                    if (/^5[1-5]/.test(number)) return "mastercard";
+                    if (/^6011/.test(number)) return "discover";
+                    return "visa"; // default
+                },
+                generateCardNumberMask() {
+                    return this.getCardType === "amex" ? this.amexCardMask : this.otherCardMask;
+                },
+                minCardMonth() {
+                    if (this.cardYear === this.minCardYear) return new Date().getMonth() + 1;
+                    return 1;
+                }
+            },
+            watch: {
+                cardYear() {
+                    if (this.cardMonth < this.minCardMonth) {
+                        this.cardMonth = "";
+                    }
+                }
+            },
+            methods: {
+                flipCard(status) {
+                    this.isCardFlipped = status;
+                },
+                focusInput(e) {
+                    this.isInputFocused = true;
+                    let target = this.$refs[e.target.dataset.ref];
+                    this.focusElementStyle = {
+                        width: `${target.offsetWidth}px`,
+                        height: `${target.offsetHeight}px`,
+                        transform: `translateX(${target.offsetLeft}px) translateY(${target.offsetTop}px)`
+                    }
+                },
+                blurInput() {
+                    setTimeout(() => {
+                        if (!this.isInputFocused) {
+                            this.focusElementStyle = null;
+                        }
+                    }, 300);
+                    this.isInputFocused = false;
+                },
+                validateAndSubmit() { // Added this method back
+                    this.$nextTick(() => {
+                        if (luhnCheck(this.cardNumber)) {
+                            this.$refs.newCardForm.submit();
+                        } else {
+                            alert("The credit card number you entered is not valid.");
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Correct logic for auto-selecting a card
+        const defaultCard = document.querySelector(".card-option[data-is-default='true']");
+        if (defaultCard) {
+            selectCard(defaultCard);
+        } else {
+            const firstCard = document.querySelector(".card-option");
+            if (firstCard) {
+                selectCard(firstCard);
+            }
+        }
+        // Logic to show form if no cards exist
+        const walletCardsContainer = document.getElementById("walletCards");
+        if (!walletCardsContainer) {
+            toggleNewCardForm();
+        }
+    });
+</script>
+
+</body>
+</html>

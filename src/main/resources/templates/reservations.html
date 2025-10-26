@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Reservations - Luxury Hotel Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/reservations.css}">
+</head>
+<body>
+
+<div class="dashboard-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a th:href="@{/reservations}" class="logo-container">
+                <i class="bi bi-building" style="font-size: 2rem;"></i>
+                <h4>Luxury Hotel</h4>
+            </a>
+            <button class="toggle-sidebar d-lg-none" id="close-sidebar" aria-label="Close sidebar menu">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+        <ul class="nav-links">
+            <li class="active">
+                <a th:href="@{/reservations}">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Reservations</span>
+                </a>
+            </li>
+        </ul>
+        <!-- Logout Section at Bottom -->
+        <div class="sidebar-footer" style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px;">
+            <a th:href="@{/logout}" class="btn btn-danger w-100" style="border-radius: 10px;">
+                <i class="bi bi-box-arrow-right me-2"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="content">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <button class="btn btn-sm btn-outline-secondary d-lg-none mobile-menu-toggle" id="toggle-sidebar" aria-label="Open sidebar menu">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div>
+                    <h2>Manage Reservations</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active" aria-current="page">Reservations</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="header-right">
+                <form th:action="@{/reservations}" method="get" class="search-container">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="search" class="search-input" name="search"
+                           th:value="${searchTerm}" placeholder="Search bookings...">
+                </form>
+            </div>
+        </header>
+
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i><strong th:text="${success}"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i><strong th:text="${error}"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Statistics Cards -->
+        <section class="stats-cards" aria-labelledby="stats-heading">
+            <h2 id="stats-heading" class="visually-hidden">Booking Statistics</h2>
+            <div class="stat-card">
+                <div class="stat-icon pending"><i class="bi bi-hourglass-split"></i></div>
+                <div class="stat-info">
+                    <h3 th:text="${stats.pendingCount}">0</h3>
+                    <p>Pending</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon confirmed"><i class="bi bi-check-circle"></i></div>
+                <div class="stat-info">
+                    <h3 th:text="${stats.confirmedCount}">0</h3>
+                    <p>Confirmed</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon checked-in"><i class="bi bi-door-open"></i></div>
+                <div class="stat-info">
+                    <h3 th:text="${stats.checkedInCount}">0</h3>
+                    <p>Checked In</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon cancelled"><i class="bi bi-x-circle"></i></div>
+                <div class="stat-info">
+                    <h3 th:text="${stats.cancelledCount}">0</h3>
+                    <p>Cancelled</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- View Controls -->
+        <section class="view-control-panel" aria-label="View and filter controls">
+            <div class="view-toggle btn-group" role="group" aria-label="View mode toggle">
+                <a th:href="@{/reservations(view='calendar',status=${selectedStatus})}"
+                   class="btn btn-outline-primary"
+                   th:classappend="${currentView == 'calendar' ? 'active' : ''}">
+                    <i class="bi bi-calendar3"></i> <span>Calendar</span>
+                </a>
+                <a th:href="@{/reservations(view='list',status=${selectedStatus})}"
+                   class="btn btn-outline-primary"
+                   th:classappend="${currentView == 'list' ? 'active' : ''}">
+                    <i class="bi bi-list-ul"></i> <span>List</span>
+                </a>
+            </div>
+            <div class="view-filters">
+                <form th:action="@{/reservations}" method="get" class="d-flex gap-2">
+                    <input type="hidden" name="view" th:value="${currentView}">
+                    <div class="input-group">
+                        <label for="status-filter" class="input-group-text"><i class="bi bi-funnel"></i></label>
+                        <select class="form-select" id="status-filter" name="status" onchange="this.form.submit()">
+                            <option value="ALL" th:selected="${selectedStatus == 'ALL'}">All Status</option>
+                            <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">Pending</option>
+                            <option value="CONFIRMED" th:selected="${selectedStatus == 'CONFIRMED'}">Confirmed</option>
+                            <option value="CHECKED_IN" th:selected="${selectedStatus == 'CHECKED_IN'}">Checked In</option>
+                            <option value="CHECKED_OUT" th:selected="${selectedStatus == 'CHECKED_OUT'}">Checked Out</option>
+                            <option value="CANCELLED" th:selected="${selectedStatus == 'CANCELLED'}">Cancelled</option>
+                        </select>
+                    </div>
+                    <a th:href="@{/reservations}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </a>
+                </form>
+            </div>
+        </section>
+
+        <!-- Calendar View -->
+        <section class="calendar-container" id="calendar-view"
+                 th:if="${currentView == 'calendar'}" aria-labelledby="calendar-heading">
+            <header class="calendar-header">
+                <h3 id="current-month" class="calendar-title"
+                    th:text="${#temporals.format(currentMonth, 'MMMM yyyy')}">October 2025</h3>
+                <div class="calendar-nav">
+                    <a th:href="@{/reservations(view='calendar',month=${prevMonth},status=${selectedStatus})}"
+                       class="btn btn-sm btn-outline-secondary" aria-label="Previous month">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                    <a th:href="@{/reservations(view='calendar',status=${selectedStatus})}"
+                       class="btn btn-sm btn-outline-secondary ms-2">Today</a>
+                    <a th:href="@{/reservations(view='calendar',month=${nextMonth},status=${selectedStatus})}"
+                       class="btn btn-sm btn-outline-secondary ms-2" aria-label="Next month">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </header>
+            <div class="calendar-grid">
+                <!-- Day Headers -->
+                <div class="calendar-day-header">Sun</div>
+                <div class="calendar-day-header">Mon</div>
+                <div class="calendar-day-header">Tue</div>
+                <div class="calendar-day-header">Wed</div>
+                <div class="calendar-day-header">Thu</div>
+                <div class="calendar-day-header">Fri</div>
+                <div class="calendar-day-header">Sat</div>
+
+                <!-- Calendar Days -->
+                <div th:each="day : ${calendarDays}"
+                     class="calendar-day"
+                     th:classappend="${day.isCurrentMonth ? '' : 'inactive'} + ' ' + ${day.isToday ? 'today' : ''}">
+                    <span class="day-number" th:text="${day.dayNumber}">1</span>
+                    <div th:each="booking : ${day.bookings}"
+                         th:class="'booking-item booking-status-' + ${#strings.toLowerCase(booking.status)}"
+                         data-bs-toggle="modal"
+                         th:data-bs-target="'#booking-detail-modal-' + ${booking.id}">
+                        <i class="bi bi-person-fill"></i>
+                        <span th:text="${booking.user.name}">Guest</span>
+                        <small th:if="${booking.room != null}" th:text="'Room ' + ${booking.room.roomNumber}"></small>
+                        <small th:if="${booking.room == null}" class="text-warning">⚠ No Room</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- List View -->
+        <section class="list-view" id="list-view"
+                 th:if="${currentView == 'list'}" aria-labelledby="list-view-heading">
+            <h2 id="list-view-heading" class="visually-hidden">Bookings List</h2>
+            <div th:if="${#lists.isEmpty(bookings)}" class="text-center p-5">
+                <i class="bi bi-inbox fs-1 text-muted"></i>
+                <h5 class="text-muted mt-3">No Reservations Found</h5>
+                <p class="text-muted">Try adjusting your filters or create a new reservation.</p>
+            </div>
+            <div th:unless="${#lists.isEmpty(bookings)}" class="table-responsive">
+                <table class="table table-hover align-middle" id="bookings-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Guest</th>
+                        <th scope="col">Room</th>
+                        <th scope="col">Check-in</th>
+                        <th scope="col">Check-out</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="booking : ${bookings}">
+                        <td class="fw-bold" th:text="${booking.id}">#001</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle fs-4 me-2 text-muted"></i>
+                                <div>
+                                    <div class="fw-semibold" th:text="${booking.user.name}">John Doe</div>
+                                    <small class="text-muted" th:text="${booking.user.email}">john@example.com</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <!-- Handle null room properly -->
+                            <span th:if="${booking.room != null}" class="badge bg-primary"
+                                  th:text="'Room ' + ${booking.room.roomNumber}">Room 101</span>
+                            <span th:if="${booking.room == null}" class="badge bg-warning text-dark"
+                                  th:text="'Type: ' + ${booking.roomType}">Type: Single</span>
+
+                            <small th:if="${booking.room != null}" class="d-block text-muted"
+                                   th:text="${booking.room.type}">Deluxe</small>
+                            <small th:if="${booking.room == null}" class="d-block text-warning">
+                                <i class="bi bi-exclamation-triangle"></i> Not Assigned
+                            </small>
+                        </td>
+                        <td th:text="${#temporals.format(booking.checkInDate, 'MMM dd, yyyy')}">Oct 12, 2025</td>
+                        <td th:text="${#temporals.format(booking.checkOutDate, 'MMM dd, yyyy')}">Oct 15, 2025</td>
+                        <td>
+                            <span class="status-badge"
+                                  th:classappend="'status-' + ${#strings.toLowerCase(booking.status)}">
+                                <i th:class="${booking.status == 'PENDING' ? 'bi bi-hourglass-split' :
+                                             booking.status == 'CONFIRMED' ? 'bi bi-check-circle' :
+                                             booking.status == 'CHECKED_IN' ? 'bi bi-door-open' :
+                                             booking.status == 'CHECKED_OUT' ? 'bi bi-door-closed' :
+                                             'bi bi-x-circle'}"></i>
+                                <span th:text="${booking.status}">Pending</span>
+                            </span>
+                        </td>
+                        <td class="fw-bold" th:text="'$' + ${#numbers.formatDecimal(booking.totalPrice, 1, 2)}">$450.00</td>
+                        <td>
+                            <div class="d-flex gap-1 justify-content-center action-buttons">
+                                <button class="action-btn action-btn-view"
+                                        data-bs-toggle="modal"
+                                        th:data-bs-target="'#booking-detail-modal-' + ${booking.id}"
+                                        title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <a th:href="@{/reservations/{id}/details(id=${booking.id})}"
+                                   class="action-btn action-btn-edit"
+                                   title="Edit Booking">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button th:if="${booking.status != 'CANCELLED' && booking.status != 'CHECKED_OUT'}"
+                                        class="action-btn action-btn-cancel"
+                                        data-bs-toggle="modal"
+                                        th:data-bs-target="'#cancel-modal-' + ${booking.id}"
+                                        title="Cancel Booking">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- New Booking Modal -->
+<div class="modal fade" id="booking-form-modal" tabindex="-1" aria-labelledby="booking-form-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form th:action="@{/reservations/create}" method="post" class="needs-validation" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="booking-form-modal-label">
+                        <i class="bi bi-plus-circle me-2"></i>New Reservation
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="booking-guest" class="form-label">Guest *</label>
+                            <div class="input-group">
+                                <select class="form-select" id="booking-guest" name="userId" required>
+                                    <option value="">Select a guest...</option>
+                                    <option th:each="user : ${allUsers}"
+                                            th:value="${user.id}"
+                                            th:text="${user.name} + ' - ' + ${user.email}">
+                                        John Doe - john@example.com
+                                    </option>
+                                </select>
+                                <button class="btn btn-outline-secondary" type="button"
+                                        data-bs-toggle="modal" data-bs-target="#add-guest-modal"
+                                        title="Add New Guest">
+                                    <i class="bi bi-person-plus"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">Please select a guest.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="booking-checkin" class="form-label">Check-in Date *</label>
+                            <input type="date" class="form-control" id="booking-checkin"
+                                   name="checkInDate" required
+                                   th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                            <div class="invalid-feedback">Please select a check-in date.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="booking-checkout" class="form-label">Check-out Date *</label>
+                            <input type="date" class="form-control" id="booking-checkout"
+                                   name="checkOutDate" required
+                                   th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                            <div class="invalid-feedback">Please select a check-out date.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="booking-room" class="form-label">Room *</label>
+                        <select class="form-select" id="booking-room" name="roomId" required>
+                            <option value="">Select dates first to see available rooms</option>
+                        </select>
+                        <div class="form-text text-primary" id="room-price-info"></div>
+                        <div class="invalid-feedback">Please select a room.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="booking-notes" class="form-label">Special Requests</label>
+                        <textarea class="form-control" id="booking-notes" name="specialRequests"
+                                  rows="2" placeholder="e.g., late check-in, extra towels"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i>Create Booking
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Guest Modal -->
+<div class="modal fade" id="add-guest-modal" tabindex="-1" aria-labelledby="add-guest-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form th:action="@{/reservations/add-guest}" method="post" class="needs-validation" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="add-guest-modal-label">
+                        <i class="bi bi-person-plus me-2"></i>Add New Guest
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="guest-name" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" id="guest-name" name="name" required>
+                        <div class="invalid-feedback">Please enter the guest's full name.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="guest-email" class="form-label">Email *</label>
+                        <input type="email" class="form-control" id="guest-email" name="email" required>
+                        <div class="invalid-feedback">Please enter a valid email address.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-1"></i>Save Guest
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Booking Detail Modals -->
+<div th:each="booking : ${bookings}">
+    <div class="modal fade" th:id="'booking-detail-modal-' + ${booking.id}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-info-circle me-2"></i>Booking Details #<span th:text="${booking.id}">001</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Guest:</strong><br>
+                            <span th:text="${booking.user.name}">John Doe</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Email:</strong><br>
+                            <span th:text="${booking.user.email}">john@example.com</span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Room:</strong><br>
+                            <!-- Handle null room in modal -->
+                            <span th:if="${booking.room != null}"
+                                  th:text="'Room ' + ${booking.room.roomNumber} + ' (' + ${booking.room.type} + ')'">Room 101</span>
+                            <span th:if="${booking.room == null}" class="text-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Type: <span th:text="${booking.roomType}">-</span><br>
+                                <small>Room Not Assigned</small>
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Status:</strong><br>
+                            <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(booking.status)}"
+                                  th:text="${booking.status}">Pending</span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Check-in:</strong><br>
+                            <span th:text="${#temporals.format(booking.checkInDate, 'MMM dd, yyyy')}">Oct 12, 2025</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Check-out:</strong><br>
+                            <span th:text="${#temporals.format(booking.checkOutDate, 'MMM dd, yyyy')}">Oct 15, 2025</span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <strong>Total Amount:</strong><br>
+                            <h4 class="text-primary" th:text="'$' + ${#numbers.formatDecimal(booking.totalPrice, 1, 2)}">$450.00</h4>
+                        </div>
+                    </div>
+                    <div th:if="${booking.specialRequests}" class="row mb-3">
+                        <div class="col-12">
+                            <strong>Special Requests:</strong><br>
+                            <span th:text="${booking.specialRequests}">Late check-in</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a th:href="@{/reservations/{id}/details(id=${booking.id})}" class="btn btn-primary">
+                        <i class="bi bi-pencil me-1"></i>Edit
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Booking Modal -->
+    <div class="modal fade" th:id="'cancel-modal-' + ${booking.id}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form th:action="@{/reservations/{id}/cancel(id=${booking.id})}" method="post">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Cancel Booking
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to cancel booking #<strong th:text="${booking.id}">001</strong> for
+                            <strong th:text="${booking.user.name}">John Doe</strong>?</p>
+                        <p class="text-danger"><small>This action cannot be undone. A refund may be processed according to the cancellation policy.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Keep It</button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-x-circle me-1"></i>Yes, Cancel Booking
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/reservations.js}"></script>
+
+</body>
+</html>

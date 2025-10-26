@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Hotel Paradise</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="hero-image">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-hotel me-2"></i>Hotel Paradise</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Nav links are dynamically loaded by auth.js -->
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/menu">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search-reservation">Find Reservation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="hero-text container">
+        <h1 class="display-3">Experience Luxury & Comfort</h1>
+        <p class="lead mb-4">Indulge in exquisite accommodations, world-class dining, and personalized service.</p>
+        <div class="hero-buttons">
+            <a href="/register" class="btn btn-primary btn-lg me-3">Book Now</a>
+            <a href="/menu" class="btn btn-outline-light btn-lg">View Menu</a>
+        </div>
+
+        <div class="hero-features mt-5">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="feature-card">
+                        <i class="fas fa-concierge-bell fa-2x mb-3"></i>
+                        <h3>Exceptional Service</h3>
+                        <p>24/7 concierge for your every need</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="feature-card">
+                        <i class="fas fa-utensils fa-2x mb-3"></i>
+                        <h3>Fine Dining</h3>
+                        <p>Award-winning restaurant on site</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-spa fa-2x mb-3"></i>
+                        <h3>Luxury Amenities</h3>
+                        <p>Spa, gym, and heated pool access</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- About Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Hotel Exterior" class="img-fluid rounded shadow">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="display-5 mb-4">About Hotel Paradise</h2>
+                <p class="lead mb-4">Experience unparalleled luxury at Hotel Paradise, where every stay is transformed into an unforgettable journey.</p>
+                <p class="mb-4">Located in the heart of Paradise City, our hotel offers easy access to popular attractions while providing a peaceful retreat for our guests. With stunning views, gourmet dining options, and world-class amenities, Hotel Paradise sets the standard for luxury accommodation.</p>
+                <a href="/register" class="btn btn-primary">
+                    <i class="fas fa-calendar-check me-2"></i>Book Your Stay
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Rooms Preview -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center display-5 mb-5">Our Luxurious Rooms</h2>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 room-preview-card">
+                    <img src="https://images.unsplash.com/photo-1591088398332-8a7791972843?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="Deluxe Room">
+                    <div class="card-body">
+                        <h5 class="card-title">Deluxe Room</h5>
+                        <p class="card-text">Spacious accommodation with premium amenities and city views.</p>
+                        <p class="text-primary fw-bold">$199/night</p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="/register" class="btn btn-outline-primary btn-sm">Book Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 room-preview-card">
+                    <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="Executive Suite">
+                    <div class="card-body">
+                        <h5 class="card-title">Executive Suite</h5>
+                        <p class="card-text">Elegant suite featuring a separate living area and premium facilities.</p>
+                        <p class="text-primary fw-bold">$299/night</p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="/register" class="btn btn-outline-primary btn-sm">Book Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 room-preview-card">
+                    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="Presidential Suite">
+                    <div class="card-body">
+                        <h5 class="card-title">Presidential Suite</h5>
+                        <p class="card-text">Our finest accommodation with panoramic views and luxury amenities.</p>
+                        <p class="text-primary fw-bold">$499/night</p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="/register" class="btn btn-outline-primary btn-sm">Book Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center display-5 mb-5">What Our Guests Say</h2>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 testimonial-card">
+                    <div class="card-body">
+                        <div class="text-warning mb-3">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="card-text">"An exceptional stay from start to finish. The staff was attentive, the room was immaculate, and the dining options were outstanding. Will definitely return!"</p>
+                        <div class="d-flex align-items-center mt-3">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" class="rounded-circle me-3" width="50" alt="Guest">
+                            <div>
+                                <h6 class="mb-0">Sarah Johnson</h6>
+                                <small class="text-muted">New York, USA</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 testimonial-card">
+                    <div class="card-body">
+                        <div class="text-warning mb-3">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="card-text">"The perfect getaway! Luxurious rooms, fantastic amenities, and the spa treatments were absolutely divine. Hotel Paradise exceeded all our expectations."</p>
+                        <div class="d-flex align-items-center mt-3">
+                            <img src="https://randomuser.me/api/portraits/men/44.jpg" class="rounded-circle me-3" width="50" alt="Guest">
+                            <div>
+                                <h6 class="mb-0">Michael Brown</h6>
+                                <small class="text-muted">London, UK</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 testimonial-card">
+                    <div class="card-body">
+                        <div class="text-warning mb-3">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="card-text">"Impeccable service and attention to detail. The restaurant offered some of the best dishes I've ever tasted. A truly memorable experience for our anniversary."</p>
+                        <div class="d-flex align-items-center mt-3">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" class="rounded-circle me-3" width="50" alt="Guest">
+                            <div>
+                                <h6 class="mb-0">Emily Chen</h6>
+                                <small class="text-muted">Sydney, Australia</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <h5><i class="fas fa-hotel me-2"></i>Hotel Paradise</h5>
+                <p>Experience luxury and comfort like never before. Our dedicated staff ensures your stay is nothing short of perfect.</p>
+                <div class="social-icons">
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/" class="text-white">Home</a></li>
+                    <li><a href="/#about" class="text-white">About Us</a></li>
+                    <li><a href="/menu" class="text-white">Restaurant</a></li>
+                    <li><a href="/#amenities" class="text-white">Amenities</a></li>
+                    <li><a href="/#contact" class="text-white">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <h5>Contact Us</h5>
+                <address>
+                    <p><i class="fas fa-map-marker-alt me-2"></i>123 Luxury Avenue<br>Paradise City, PC 12345</p>
+                    <p><i class="fas fa-phone-alt me-2"></i>(555) 123-4567</p>
+                    <p><i class="fas fa-envelope me-2"></i>info@hotelparadise.com</p>
+                </address>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5>Newsletter</h5>
+                <p>Subscribe to receive special offers and updates.</p>
+                <form>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Your email">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="row">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <p class="mb-0">© 2025 Hotel Paradise. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p class="mb-0">
+                    <a href="#" class="text-white me-3">Privacy Policy</a>
+                    <a href="#" class="text-white">Terms of Service</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/auth.js"></script>
+</body>
+</html>

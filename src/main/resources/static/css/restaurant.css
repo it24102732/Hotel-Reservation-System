@@ -1,0 +1,118 @@
+/* Restaurant Dashboard CSS */
+body {
+    font-family: 'Raleway', sans-serif;
+    background-color: #f8f9fc;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Sidebar */
+#sidebar-wrapper {
+    min-height: 100vh;
+    width: 250px;
+    margin-left: -250px;
+    transition: margin 0.25s ease-out;
+    z-index: 1000;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -250px;
+    }
+}
+
+/* Dashboard Cards */
+.border-start-primary {
+    border-left: 4px solid #4e73df !important;
+}
+
+.border-start-success {
+    border-left: 4px solid #1cc88a !important;
+}
+
+.border-start-info {
+    border-left: 4px solid #36b9cc !important;
+}
+
+.border-start-warning {
+    border-left: 4px solid #f6c23e !important;
+}
+
+.text-xs {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.text-gray-300 {
+    color: #dddfeb !important;
+}
+
+.card {
+    border: none;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Tables */
+.table {
+    vertical-align: middle;
+}
+
+.menu-item-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Category Badges */
+.category-badge {
+    font-weight: 600;
+    padding: 6px 12px;
+}
+
+.badge-appetizers {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.badge-main {
+    background-color: #4ecdc4;
+    color: white;
+}
+
+.badge-desserts {
+    background-color: #ffd93d;
+    color: #333;
+}
+
+.badge-beverages {
+    background-color: #a29bfe;
+    color: white;
+}

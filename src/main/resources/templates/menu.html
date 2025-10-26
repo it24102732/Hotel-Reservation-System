@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Menu - Hotel Paradise</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/menu-styles.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/"><i class="fas fa-hotel me-2"></i>Hotel Paradise</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/menu">Menu</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/search-reservation">Find Reservation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="menu-hero py-5 text-center">
+    <div class="container">
+        <h1 class="display-4 mb-3">Our Exquisite Menu</h1>
+        <p class="lead mb-4">Indulge in culinary masterpieces crafted by our award-winning chefs</p>
+        <div class="menu-categories mb-4">
+            <button class="btn btn-outline-light active" data-category="all">All</button>
+            <button class="btn btn-outline-light" data-category="Appetizer">Appetizers</button>
+            <button class="btn btn-outline-light" data-category="Main Course">Main Courses</button>
+            <button class="btn btn-outline-light" data-category="Dessert">Desserts</button>
+            <button class="btn btn-outline-light" data-category="Beverage">Drinks</button>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="search-container">
+        <div class="input-group">
+            <input type="text" class="form-control" id="menuSearch" placeholder="Search our menu...">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+        </div>
+    </div>
+
+    <div id="menuItems" class="row">
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading menu items...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <p class="text-muted">Prices are subject to 10% service charge and applicable taxes</p>
+        <p><small>Please inform our staff about any allergies or dietary restrictions</small></p>
+        <a href="/" class="btn btn-secondary me-3">
+            <i class="fas fa-home me-2"></i>Back to Home
+        </a>
+        <a href="#" class="btn btn-primary" id="orderOnlineBtn">
+            <i class="fas fa-utensils me-2"></i>Order Online
+        </a>
+    </div>
+</div>
+
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5><i class="fas fa-hotel me-2"></i>Hotel Paradise</h5>
+                <p class="mb-0">123 Luxury Avenue, Paradise City</p>
+                <p>Contact: +1 (555) 123-4567</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p class="mb-0">© 2025 Hotel Paradise. All rights reserved.</p>
+                <div class="mt-2">
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/menu.js"></script>
+<script>
+    // Add event listener for the Order Online button
+    document.getElementById('orderOnlineBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        // Check if user is logged in
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        if (currentUser) {
+            window.location.href = '/dashboard';
+        } else {
+            // Show login modal or redirect to login page
+            alert('Please login to place an order online');
+            window.location.href = '/login';
+        }
+    });
+</script>
+</body>
+</html>

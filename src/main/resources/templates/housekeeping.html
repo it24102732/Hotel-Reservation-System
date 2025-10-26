@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housekeeping Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/housekeeping.css}">
+    <style>
+        /* Quick CSS for improved sidebar toggle on small screens */
+        @media (max-width: 767px) {
+            #sidebar-wrapper {
+                position: fixed;
+                z-index: 1030;
+                top: 0; left: 0; height: 100vh;
+                box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+            }
+            #wrapper.toggled #sidebar-wrapper {
+                margin-left: 0;
+            }
+            #wrapper:not(.toggled) #sidebar-wrapper {
+                margin-left: -250px;
+            }
+            #page-content-wrapper {
+                padding-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="d-flex" id="wrapper">
+    <nav class="border-end bg-dark" id="sidebar-wrapper" aria-label="Sidebar navigation">
+        <div class="sidebar-heading border-bottom bg-dark text-white p-3 d-flex align-items-center">
+            <i class="fas fa-hotel me-2"></i>
+            <span>Hotel Paradise</span>
+            <button class="btn btn-outline-light btn-sm ms-auto d-md-none" id="sidebarClose" aria-label="Close sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="list-group list-group-flush">
+            <a class="list-group-item list-group-item-action bg-dark text-primary p-3 active" th:href="@{/housekeeping}">
+                <i class="fas fa-broom fa-fw me-2"></i>Housekeeping
+            </a>
+            <a class="list-group-item list-group-item-action bg-dark text-white p-3" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+        </div>
+    </nav>
+
+    <div id="page-content-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom" aria-label="Main navigation">
+            <div class="container-fluid">
+                <button class="btn btn-primary d-md-none" id="sidebarToggle" aria-label="Open sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="ms-auto fw-bold">Housekeeping Supervisor</div>
+            </div>
+        </nav>
+
+        <div class="container-fluid p-4">
+            <h1 class="h3 mb-4 text-gray-800">Housekeeping Overview</h1>
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i><strong th:text="${success}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i><strong th:text="${error}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="card stat-card border-left-primary h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <div class="stat-card-title text-primary">Pending</div>
+                                    <div class="stat-card-value" th:text="${summary.pendingCount}">0</div>
+                                </div>
+                                <div class="ms-auto"><i class="fas fa-clock stat-card-icon"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card stat-card border-left-info h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <div class="stat-card-title text-info">In Progress</div>
+                                    <div class="stat-card-value" th:text="${summary.inProgressCount}">0</div>
+                                </div>
+                                <div class="ms-auto"><i class="fas fa-spinner stat-card-icon"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card stat-card border-left-success h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <div class="stat-card-title text-success">Completed Today</div>
+                                    <div class="stat-card-value" th:text="${summary.completedTodayCount}">0</div>
+                                </div>
+                                <div class="ms-auto"><i class="fas fa-check-circle stat-card-icon"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card stat-card border-left-warning h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <div class="stat-card-title text-warning">Staff On Duty</div>
+                                    <div class="stat-card-value" th:text="${summary.staffOnDuty}">0</div>
+                                </div>
+                                <div class="ms-auto"><i class="fas fa-users stat-card-icon"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="m-0 fw-bold"><i class="fas fa-plus-circle me-2"></i>Create New Task</h6>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/housekeeping/tasks}" method="post" autocomplete="off">
+                                <div class="mb-3">
+                                    <label for="roomId" class="form-label">Room</label>
+                                    <select class="form-select" id="roomId" name="roomId" required aria-describedby="roomHelp">
+                                        <option value="">Select an available room...</option>
+                                        <option th:each="room : ${availableRooms}" th:value="${room.id}" th:text="'Room ' + ${room.roomNumber} + ' (' + ${room.type} + ')'"></option>
+                                    </select>
+                                    <div id="roomHelp" class="form-text">Only shows rooms that are available for cleaning.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="scheduledFor" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="scheduledFor" name="scheduledFor" required
+                                           th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"
+                                           th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" />
+                                    <div class="form-text">You can only select today or future dates.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="assignedTo" class="form-label">Assign To</label>
+                                    <input type="text" class="form-control" id="assignedTo" name="assignedTo" required placeholder="Enter staff name..." />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="priority" class="form-label">Priority</label>
+                                    <select class="form-select" id="priority" name="priority" required>
+                                        <option value="NORMAL">Normal</option>
+                                        <option value="HIGH">High</option>
+                                        <option value="URGENT">Urgent</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="notes" class="form-label">Notes</label>
+                                    <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="e.g., Guest requested extra towels..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 fw-bold"><i class="fas fa-plus me-2"></i>Add Task</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h6 class="m-0 fw-bold text-primary"><i class="fas fa-tasks me-2"></i>Current Cleaning Tasks</h6>
+                        </div>
+                        <div th:if="${#lists.isEmpty(tasks)}" class="card-body text-center p-5">
+                            <i class="fas fa-clipboard-check fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">All Clear!</h5>
+                            <p class="text-muted">There are no pending or in-progress cleaning tasks.</p>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(tasks)}" class="table-responsive">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Room</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Assigned</th>
+                                    <th scope="col">Priority</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" class="text-center">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="task : ${tasks}">
+                                    <td class="fw-bold" th:text="${task.room.roomNumber}"></td>
+                                    <td th:text="${#temporals.format(task.scheduledFor, 'MMM dd')}"></td>
+                                    <td th:text="${task.assignedTo}"></td>
+                                    <td>
+                                            <span class="badge d-flex align-items-center gap-1"
+                                                  th:classappend="'priority-' + ${task.priority}">
+                                                <i th:if="${task.priority == 'URGENT'}" class="fas fa-bolt"></i>
+                                                <i th:if="${task.priority == 'HIGH'}" class="fas fa-exclamation-triangle"></i>
+                                                <i th:if="${task.priority == 'NORMAL'}" class="fas fa-circle"></i>
+                                                <span th:text="${task.priority}"></span>
+                                            </span>
+                                    </td>
+                                    <td>
+                                            <span class="badge rounded-pill d-flex align-items-center gap-1"
+                                                  th:classappend="'status-' + ${task.status}">
+                                                <i th:if="${task.status == 'PENDING'}" class="fas fa-hourglass-start"></i>
+                                                <i th:if="${task.status == 'IN_PROGRESS'}" class="fas fa-spinner"></i>
+                                                <i th:if="${task.status == 'COMPLETED'}" class="fas fa-check"></i>
+                                                <span th:text="${task.status.replace('_', ' ')}"></span>
+                                            </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex gap-1 justify-content-center">
+                                            <form th:if="${task.status == 'PENDING'}"
+                                                  th:action="@{/housekeeping/tasks/{id}/update-status(id=${task.id})}" method="post">
+                                                <input type="hidden" name="status" value="IN_PROGRESS" />
+                                                <button type="submit" class="btn btn-sm btn-info" title="Start Task">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                            </form>
+                                            <form th:if="${task.status == 'IN_PROGRESS'}"
+                                                  th:action="@{/housekeeping/tasks/{id}/update-status(id=${task.id})}" method="post">
+                                                <input type="hidden" name="status" value="COMPLETED" />
+                                                <button type="submit" class="btn btn-sm btn-success" title="Complete Task">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            <button th:if="${task.status != 'COMPLETED'}" type="button"
+                                                    class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                    th:attr="data-bs-target='#deleteTaskModal-' + ${task.id}" title="Delete Task">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <span th:if="${task.status == 'COMPLETED'}" class="text-success">
+                                                    <i class="fas fa-check-circle"></i> Done
+                                                </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <!-- Pagination (optional) -->
+                            <!-- <nav aria-label="Task pagination">
+                                <ul class="pagination justify-content-end mt-3">
+                                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                </ul>
+                            </nav> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- page-content-wrapper -->
+</div>
+
+<!-- Delete Task Modal -->
+<div th:each="task : ${tasks}">
+    <div class="modal fade" th:id="'deleteTaskModal-' + ${task.id}" tabindex="-1" aria-labelledby="deleteTaskLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form th:action="@{/housekeeping/tasks/{id}/delete(id=${task.id})}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteTaskLabel">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancel"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete the task for Room <strong th:text="${task.room.roomNumber}"></strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Yes, Delete Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const sidebarToggle = document.body.querySelector('#sidebarToggle');
+        const sidebarClose = document.body.querySelector('#sidebarClose');
+        const wrapper = document.body.querySelector('#wrapper');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', event => {
+                event.preventDefault();
+                wrapper.classList.toggle('toggled');
+            });
+        }
+        if (sidebarClose) {
+            sidebarClose.addEventListener('click', event => {
+                event.preventDefault();
+                wrapper.classList.remove('toggled');
+            });
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Reports Management - Hotel Paradise</title>
+    <link rel="stylesheet" th:href="@{/css/reports.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Simple styles for validation feedback */
+        .form-group .error-message, .form-group-inline .error-message {
+            color: var(--danger-color, #d9534f);
+            font-size: 0.8rem;
+            display: none; /* Hidden by default */
+            margin-top: 4px;
+        }
+        .form-group input.invalid, .form-group select.invalid, .form-group textarea.invalid {
+            border-color: var(--danger-color, #d9534f);
+            box-shadow: 0 0 5px rgba(217, 83, 79, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-top">
+            <div class="header-left">
+                <h1><i class="fas fa-chart-bar"></i> Financial Reports Management</h1>
+                <p class="header-subtitle">Create, manage, and track your financial reports</p>
+            </div>
+            <div class="header-right">
+                <a th:href="@{/finance}" class="btn-back-finance">
+                    <i class="fas fa-arrow-left"></i> Back to Finance Dashboard
+                </a>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="breadcrumb">
+                <a th:href="@{/dashboard}"><i class="fas fa-home"></i> Home</a>
+                <span class="breadcrumb-separator">/</span>
+                <a th:href="@{/finance}"><i class="fas fa-coins"></i> Finance</a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current"><i class="fas fa-file-invoice-dollar"></i> Financial Reports</span>
+            </div>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span th:text="${session.userName} ?: 'Finance Officer'">Finance Officer</span>
+                <span class="user-role" th:text="${session.userRole} ?: 'FINANCE_OFFICER'">FINANCE_OFFICER</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="reports-section">
+        <div class="section-header">
+            <div class="section-title-wrapper">
+                <h2>Financial Reports</h2>
+                <p class="section-description">Manage revenue, expense, and profit/loss reports</p>
+            </div>
+            <button id="create-report-btn" class="btn primary">
+                <i class="fas fa-plus-circle"></i> Create New Report
+            </button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th><i class="fas fa-file-alt"></i> Report Name</th>
+                    <th><i class="fas fa-tag"></i> Type</th>
+                    <th><i class="fas fa-flag"></i> Status</th>
+                    <th><i class="fas fa-calendar"></i> Date Range</th>
+                    <th><i class="fas fa-dollar-sign"></i> Total Amount</th>
+                    <th><i class="fas fa-cog"></i> Actions</th>
+                </tr>
+                </thead>
+                <tbody id="reports-table-body">
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<div id="report-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header-custom">
+            <h2 id="report-modal-title">Create New Report</h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <form id="report-form" novalidate>
+                <input type="hidden" id="report-id">
+
+                <div class="form-group">
+                    <label for="report-name">
+                        <i class="fas fa-heading"></i> Report Name
+                    </label>
+                    <input type="text" id="report-name" placeholder="e.g., Q1 Revenue Report 2025" required maxlength="100">
+                    <span class="error-message" id="report-name-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="report-type">
+                        <i class="fas fa-list"></i> Report Type
+                    </label>
+                    <select id="report-type" required>
+                        <option value="">-- Select Report Type --</option>
+                        <option value="REVENUE">📈 Revenue Report</option>
+                        <option value="EXPENSE">📉 Expense Report</option>
+                        <option value="PROFIT_LOSS">💰 Profit/Loss Report</option>
+                    </select>
+                    <span class="error-message" id="report-type-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="report-description">
+                        <i class="fas fa-align-left"></i> Description
+                    </label>
+                    <textarea id="report-description" rows="3" placeholder="Optional description..." maxlength="255"></textarea>
+                </div>
+
+                <div class="form-group-inline">
+                    <div class="form-group">
+                        <label for="report-start-date">
+                            <i class="fas fa-calendar-alt"></i> Start Date
+                        </label>
+                        <input type="datetime-local" id="report-start-date" required>
+                        <span class="error-message" id="report-start-date-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-end-date">
+                            <i class="fas fa-calendar-check"></i> End Date
+                        </label>
+                        <input type="datetime-local" id="report-end-date" required>
+                        <span class="error-message" id="report-end-date-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn secondary close-btn-form">Cancel</button>
+                    <button type="submit" class="btn primary">
+                        <i class="fas fa-save"></i> Save Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="view-report-modal" class="modal">
+    <div class="modal-content large">
+        <div class="modal-header-custom">
+            <h2>Report Details</h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body-custom" id="report-details-content">
+        </div>
+    </div>
+</div>
+
+<div id="entry-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header-custom">
+            <h2 id="entry-modal-title">Add Entry</h2>
+            <button class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <form id="entry-form" novalidate>
+                <input type="hidden" id="entry-id">
+                <input type="hidden" id="entry-report-id">
+                <input type="hidden" id="entry-type">
+
+                <div class="form-group">
+                    <label for="entry-category-source" id="entry-category-source-label">
+                        <i class="fas fa-tag"></i> Category / Source
+                    </label>
+                    <input type="text" id="entry-category-source" placeholder="e.g., Room Bookings, Utilities" required maxlength="100">
+                    <span class="error-message" id="entry-category-source-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="entry-description">
+                        <i class="fas fa-file-alt"></i> Description
+                    </label>
+                    <input type="text" id="entry-description" placeholder="Detailed description" required maxlength="255">
+                    <span class="error-message" id="entry-description-error"></span>
+                </div>
+
+                <div class="form-group-inline">
+                    <div class="form-group">
+                        <label for="entry-amount">
+                            <i class="fas fa-dollar-sign"></i> Amount ($)
+                        </label>
+                        <input type="number" id="entry-amount" step="0.01" min="0.01" placeholder="0.00" required>
+                        <span class="error-message" id="entry-amount-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="entry-date">
+                            <i class="fas fa-calendar"></i> Entry Date
+                        </label>
+                        <input type="date" id="entry-date" required>
+                        <span class="error-message" id="entry-date-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn secondary close-btn-form">Cancel</button>
+                    <button type="submit" class="btn primary">
+                        <i class="fas fa-save"></i> Save Entry
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/reports.js}"></script>
+</body>
+</html>

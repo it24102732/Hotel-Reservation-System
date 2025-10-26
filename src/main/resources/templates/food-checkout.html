@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Hotel Paradise</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #4338ca; /* Indigo */
+            --primary-light: #6366f1;
+            --secondary: #14b8a6; /* Teal */
+            --secondary-dark: #0d9488;
+            --light-gray: #f3f4f6;
+            --medium-gray: #e5e7eb;
+            --dark-gray: #4b5563;
+            --text-color: #1f2937;
+            --danger-color: #ef4444;
+            --success-color: #22c55e;
+            --border-radius: 1rem; /* 16px */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            padding: 2rem 0;
+        }
+
+        .checkout-header {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            color: white;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(67, 56, 202, 0.2);
+        }
+
+        .checkout-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .order-summary {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 2rem;
+        }
+
+        .option-box {
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+        }
+
+        .option-box:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .option-box.selected {
+            border-color: var(--primary-dark);
+            background: rgba(67, 56, 202, 0.05);
+            box-shadow: 0 4px 10px rgba(67, 56, 202, 0.1);
+        }
+
+        .option-box .form-check-input {
+            height: 1.3em;
+            width: 1.3em;
+        }
+
+        .cart-item-summary {
+            border-bottom: 1px solid var(--medium-gray);
+            padding: 1rem 0;
+        }
+        .cart-item-summary:last-child {
+            border-bottom: none;
+        }
+
+        .btn-place-order {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .btn-place-order:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(20, 184, 166, 0.3);
+            color: white;
+        }
+
+        .btn-place-order:disabled {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="checkout-header">
+        <h2 class="mb-2 fw-bold"><i class="fas fa-shopping-bag me-3"></i>Checkout</h2>
+        <p class="mb-0 opacity-75">Complete your food order and we'll deliver it to your room.</p>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mt-3">
+        <i class="fas fa-exclamation-triangle me-2"></i><span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-7">
+            <form th:action="@{/customer/food-order/place-order}" method="post" id="checkoutForm">
+
+                <div class="checkout-section">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-door-open me-2 text-primary"></i>1. Delivery Room</h5>
+                    <p class="text-muted small">Select which active booking to deliver your order to.</p>
+                    <div th:each="booking, iter : ${activeBookings}">
+                        <div class="option-box booking-option" th:classappend="${iter.index == 0} ? 'selected'" onclick="selectBooking(this)">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="bookingId" th:id="'booking' + ${booking.id}" th:value="${booking.id}" th:checked="${iter.index == 0}" required>
+                                <label class="form-check-label w-100" th:for="'booking' + ${booking.id}">
+                                    <strong>Room <span th:text="${booking.room.roomNumber}"></span> - <span th:text="${booking.room.type}"></span></strong>
+                                    <div class="small text-muted mt-1">Booking #<span th:text="${booking.id}"></span></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-section">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-credit-card me-2 text-primary"></i>2. Payment Method</h5>
+
+                    <div th:each="card : ${walletCards}">
+                        <div class="option-box card-option"
+                             th:classappend="${card.isDefault} ? 'selected'"
+                             th:data-balance="${card.balance}"
+                             th:data-is-default="${card.isDefault}"
+                             onclick="selectCard(this)">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="cardId" th:id="'card' + ${card.id}" th:value="${card.id}" th:checked="${card.isDefault}" required>
+                                <label class="form-check-label w-100" th:for="'card' + ${card.id}">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong th:text="${card.cardHolderName}"></strong>
+                                            <span th:if="${card.isDefault}" class="badge bg-primary ms-2">Default</span>
+                                            <div class="text-muted small">•••• <span th:text="${#strings.substring(card.cardNumber, card.cardNumber.length() - 4)}"></span></div>
+                                        </div>
+                                        <div th:if="${card.isDefault}" class="text-end">
+                                            <div class="small text-muted">Balance</div>
+                                            <strong class="fs-5" th:classappend="${card.balance >= cartTotal} ? 'text-success' : 'text-danger'">
+                                                $<span th:text="${#numbers.formatDecimal(card.balance, 1, 2)}"></span>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(walletCards)}" class="alert alert-warning">You don't have any saved cards. Please add one in your wallet.</div>
+                </div>
+
+                <div class="checkout-section">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-comment-dots me-2 text-primary"></i>3. Special Instructions</h5>
+                    <textarea class="form-control" name="specialInstructions" rows="3" placeholder="Any special requests or dietary requirements..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-place-order mb-3" id="placeOrderBtn">
+                    <i class="fas fa-check-circle me-2"></i>Place Order
+                </button>
+                <a th:href="@{/customer/food-order/menu}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Menu
+                </a>
+            </form>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="order-summary">
+                <h5 class="fw-bold mb-4"><i class="fas fa-receipt me-2 text-primary"></i>Order Summary</h5>
+                <div th:each="entry : ${cart}" class="cart-item-summary">
+                    <div class="d-flex justify-content-between mb-1">
+                        <div>
+                            <strong th:text="${entry.value.menuItem.name}"></strong>
+                            <small class="text-muted d-block">Qty: <span th:text="${entry.value.quantity}"></span> × $<span th:text="${#numbers.formatDecimal(entry.value.menuItem.price, 1, 2)}"></span></small>
+                        </div>
+                        <strong class="fw-semibold"> $<span th:text="${#numbers.formatDecimal(entry.value.subtotal, 1, 2)}"></span></strong>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-top">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="fw-bold mb-0">Total Amount:</h5>
+                        <h4 class="text-primary fw-bolder mb-0"> $<span th:text="${#numbers.formatDecimal(cartTotal, 1, 2)}"></span></h4>
+                    </div>
+                </div>
+                <div class="alert alert-light border mt-3">
+                    <div class="d-flex align-items-center"><i class="fas fa-shield-alt text-success fs-4 me-3"></i><div><strong>Secure Payment</strong><p class="mb-0 small text-muted">Your payment is protected</p></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const cartTotal = /*[[${cartTotal}]]*/ 0;
+
+    function selectBooking(element) {
+        document.querySelectorAll('.booking-option').forEach(opt => opt.classList.remove('selected'));
+        element.classList.add('selected');
+    }
+
+    // --- MODIFICATION: Updated card selection logic ---
+    function selectCard(element) {
+        document.querySelectorAll('.card-option').forEach(opt => opt.classList.remove('selected'));
+        element.classList.add('selected');
+
+        const balance = parseFloat(element.dataset.balance);
+        const isDefault = element.dataset.isDefault === 'true';
+        const placeOrderBtn = document.getElementById('placeOrderBtn');
+
+        // Only disable the button if the default card is selected and has insufficient funds
+        if (isDefault && balance < cartTotal) {
+            placeOrderBtn.disabled = true;
+            placeOrderBtn.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Insufficient Balance';
+        } else {
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Place Order';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Automatically select the default card on page load
+        const defaultCard = document.querySelector(".card-option[data-is-default='true']");
+        if (defaultCard) {
+            selectCard(defaultCard);
+        } else {
+            // If no default card, select the first one if it exists
+            const firstCard = document.querySelector(".card-option");
+            if (firstCard) {
+                selectCard(firstCard);
+            }
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

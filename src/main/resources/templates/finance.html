@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Finance Dashboard - Hotel Paradise</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/finance.css}">
+</head>
+<body>
+<div id="wrapper">
+    <aside class="sidebar">
+        <div class="brand">Hotel Paradise</div>
+        <nav>
+            <a class="nav-link active" th:href="@{/finance}" th:classappend="${activePage == 'finance' ? 'active' : ''}"><i class="fas fa-coins"></i> Finance</a>
+        </nav>
+    </aside>
+    <div style="flex:1;">
+        <nav class="top-nav">
+            <span class="page-title">Finance Dashboard</span>
+
+            <a th:href="@{/financial-reports}" class="btn btn-outline-primary ms-auto me-3">
+                <i class="fas fa-file-invoice-dollar"></i> Manage Financial Reports
+            </a>
+            <div class="user-actions">
+                <button class="btn" th:href="@{/profile}" title="Profile"><i class="fas fa-user"></i></button>
+                <li><a class="btn" th:href="@{/logout}"><i i class="fas fa-sign-out-alt"></i></a></li>
+            </div>
+        </nav>
+        <main class="main-content">
+            <div class="stats-row">
+                <div class="stat-card" style="border-top-color: var(--primary);">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">TOTAL REVENUE</div>
+                        <div class="stat-value" th:text="${'US$ ' + #numbers.formatDecimal(summary.totalRevenue, 1, 2)}">$0.00</div>
+                    </div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">NET REVENUE</div>
+                        <div class="stat-value" th:text="${'US$ ' + #numbers.formatDecimal(summary.netRevenue, 1, 2)}">$0.00</div>
+                    </div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-icon"><i class="fas fa-undo-alt"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">PENDING REFUNDS</div>
+                        <div class="stat-value" th:text="${summary.pendingRefundCount}">0</div>
+                    </div>
+                </div>
+                <div class="stat-card info">
+                    <div class="stat-icon"><i class="fas fa-receipt"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">TRANSACTIONS TODAY</div>
+                        <div class="stat-value" th:text="${summary.todayTransactions}">0</div>
+                    </div>
+                </div>
+            </div>
+            <ul class="nav custom-tabs" role="tablist">
+                <li><a class="nav-link active" data-bs-toggle="tab" href="#refunds" role="tab">Refund Requests</a></li>
+                <li><a class="nav-link" data-bs-toggle="tab" href="#cancelled" role="tab">Cancelled Bookings</a></li>
+                <li><a class="nav-link" data-bs-toggle="tab" href="#transactions" role="tab">All Transactions</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="refunds" role="tabpanel">
+                    <div class="content-card">
+                        <div class="card-header-custom">
+                            <span class="card-title-custom">Refund Requests</span>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" th:text="${'Filter: ' + currentFilter}">Filter</button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" th:href="@{/finance(filter='PENDING')}">Pending</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/finance(filter='SUCCESSFUL')}">Successful</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/finance(filter='FAILED')}">Failed</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/finance(filter='ALL')}">Show All</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table custom-table">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>BOOKING ID</th>
+                                    <th>GUEST</th>
+                                    <th>AMOUNT</th>
+                                    <th>STATUS</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="refund : ${refunds}">
+                                    <td th:text="'#' + ${refund.id}"></td>
+                                    <td th:text="'#' + ${refund.booking.id}"></td>
+                                    <td th:text="${refund.booking.user.name}"></td>
+                                    <td th:text="${'US$ ' + #numbers.formatDecimal(refund.amount, 1, 2)}"></td>
+                                    <td>
+                      <span class="badge"
+                            th:classappend="${refund.status == 'PENDING' ? 'badge-warning' : (refund.status == 'SUCCESSFUL' ? 'badge-success' : 'badge-danger')}"
+                            th:text="${refund.status}"></span>
+                                    </td>
+                                    <td>
+                                        <div th:if="${refund.status == 'PENDING'}">
+                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" th:attr="data-bs-target='#processRefundModal-' + ${refund.id}">Process</button>
+                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" th:attr="data-bs-target='#rejectRefundModal-' + ${refund.id}">Reject</button>
+                                        </div>
+                                        <span th:unless="${refund.status == 'PENDING'}" class="text-muted small">Action Taken</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(refunds)}">
+                                    <td colspan="6" class="text-center text-secondary">No refunds found for this filter.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="cancelled" role="tabpanel">
+                    <div class="content-card">
+                        <div class="card-header-custom">
+                            <span class="card-title-custom">Cancelled Bookings</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table custom-table">
+                                <thead>
+                                <tr>
+                                    <th>BOOKING ID</th>
+                                    <th>GUEST</th>
+                                    <th>ROOM</th>
+                                    <th>PRICE</th>
+                                    <th>STATUS</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="booking : ${cancelledBookings}">
+                                    <td th:text="'#' + ${booking.id}"></td>
+                                    <td th:text="${booking.user.name}"></td>
+                                    <td th:text="${booking.room?.roomNumber ?: 'N/A'}"></td>
+                                    <td th:text="${'US$ ' + #numbers.formatDecimal(booking.totalPrice, 1, 2)}"></td>
+                                    <td><span class="badge badge-danger" th:text="${booking.status}"></span></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(cancelledBookings)}">
+                                    <td colspan="5" class="text-center text-secondary">No cancelled bookings found.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="transactions" role="tabpanel">
+                    <div class="content-card">
+                        <div class="card-header-custom">
+                            <span class="card-title-custom">All Transactions</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table custom-table">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>TYPE</th>
+                                    <th>CUSTOMER</th>
+                                    <th>AMOUNT</th>
+                                    <th>STATUS</th>
+                                    <th>DATE</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="transaction : ${transactions}">
+                                    <td th:text="'#' + ${transaction['id']}"></td>
+                                    <td>
+                      <span class="badge"
+                            th:classappend="${transaction['type'] == 'BOOKING' ? 'badge-primary' : 'badge-info'}"
+                            th:text="${transaction['type']}"></span>
+                                    </td>
+                                    <td th:text="${transaction['customerName']}"></td>
+                                    <td th:text="${'US$ ' + #numbers.formatDecimal(transaction['amount'], 1, 2)}"></td>
+                                    <td>
+                      <span class="badge"
+                            th:classappend="${transaction['status'] == 'SUCCESSFUL' ? 'badge-success' : 'badge-danger'}"
+                            th:text="${transaction['status']}"></span>
+                                    </td>
+                                    <td th:text="${#temporals.format(transaction['transactionDate'], 'yyyy-MM-dd HH:mm')}"></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(transactions)}">
+                                    <td colspan="6" class="text-center text-secondary">No transactions found.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<!-- Refund Modals -->
+<div th:each="refund : ${refunds}">
+    <div class="modal fade" th:id="'processRefundModal-' + ${refund.id}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form th:action="@{/finance/refunds/{id}/process(id=${refund.id})}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Process Refund</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to process the refund for Booking <strong th:text="'#' + ${refund.booking.id}"></strong>?</p>
+                        <p>Amount: <strong th:text="${'US$ ' + #numbers.formatDecimal(refund.amount, 1, 2)}"></strong></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Confirm Process</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" th:id="'rejectRefundModal-' + ${refund.id}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form th:action="@{/finance/refunds/{id}/reject(id=${refund.id})}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Reject Refund</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Please provide a reason for rejecting the refund for Booking <strong th:text="'#' + ${refund.booking.id}"></strong>.</p>
+                        <div class="mb-3">
+                            <label th:for="'rejectionReason-' + ${refund.id}" class="form-label">Rejection Reason</label>
+                            <textarea class="form-control" name="reason" th:id="'rejectionReason-' + ${refund.id}" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Confirm Reject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

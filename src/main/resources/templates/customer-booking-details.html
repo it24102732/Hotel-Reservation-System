@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - Hotel Paradise</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #005f73;      /* Deep Teal */
+            --secondary: #daa520;    /* Gold */
+            --light: #f8f9fa;        /* Soft Off-White */
+            --dark: #212529;         /* Dark Gray/Black */
+            --card-border-radius: 1rem;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: #f7f9fc;
+        }
+
+        .details-card {
+            background: white;
+            border: 1px solid #eef2f7;
+            border-radius: var(--card-border-radius);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .details-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem;
+        }
+
+        .details-header h3 {
+            font-family: var(--font-display);
+            font-size: 2.25rem;
+        }
+
+        .details-body {
+            padding: 2rem;
+        }
+
+        .detail-section h5 {
+            font-family: var(--font-display);
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+        }
+
+        .status-pending { background-color: #fff8e1; color: #f57f17; }
+        .status-confirmed { background-color: #e8f5e9; color: #2e7d32; }
+        .status-checked-in { background-color: #e3f2fd; color: #1565c0; }
+        .status-checked-out { background-color: #e1e1e1; color: #424242; }
+        .status-cancelled { background-color: #ffebee; color: #c62828; }
+
+        .btn { border-radius: 0.75rem; font-weight: 600; padding: 0.75rem 1.5rem; }
+    </style>
+</head>
+<body>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="details-card">
+                <header class="details-header text-center">
+                    <h3 class="mb-0"><i class="fas fa-file-invoice me-2"></i>Booking Details</h3>
+                </header>
+                <div class="details-body">
+
+                    <div th:if="${success}" class="alert alert-success alert-dismissible fade show"><i class="fas fa-check-circle me-2"></i><span th:text="${success}"></span><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+                    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show"><i class="fas fa-exclamation-triangle me-2"></i><span th:text="${error}"></span><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div>
+                            <small class="text-muted">Booking ID</small>
+                            <h4 class="fw-bold mb-0">#<span th:text="${booking.id}">123</span></h4>
+                        </div>
+                        <div class="status-badge"
+                             th:classappend="'status-' + ${#strings.toLowerCase(booking.status).replace('_', '-')}"
+                             th:text="${booking.status}">
+                            Status
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4 detail-section">
+                            <h5><i class="fas fa-door-open me-2"></i>Room Information</h5>
+                            <div th:if="${booking.room == null}" class="alert alert-warning p-2">
+                                <strong>Room Type: <span th:text="${booking.roomType}"></span></strong><br>
+                                <small>Room # will be assigned shortly.</small>
+                            </div>
+                            <div th:if="${booking.room != null}">
+                                <small class="text-muted">Room Type</small><div class="fw-bold" th:text="${booking.room.type}"></div>
+                                <small class="text-muted mt-2 d-block">Room Number</small><div class="fw-bold" th:text="${booking.room.roomNumber}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4 detail-section">
+                            <h5><i class="fas fa-calendar-alt me-2"></i>Stay Details</h5>
+                            <small class="text-muted">Check-in</small><div class="fw-bold" th:text="${#temporals.format(booking.checkInDate, 'MMM dd, yyyy')}"></div>
+                            <small class="text-muted mt-2 d-block">Check-out</small><div class="fw-bold" th:text="${#temporals.format(booking.checkOutDate, 'MMM dd, yyyy')}"></div>
+                        </div>
+                    </div>
+
+                    <div th:if="${booking.specialRequests}" class="mb-4 detail-section">
+                        <h5><i class="fas fa-comment-dots me-2"></i>Special Requests</h5>
+                        <p class="text-muted fst-italic bg-light p-3 rounded" th:text="${booking.specialRequests}"></p>
+                    </div>
+
+                    <div class="mb-4 pb-3 border-bottom detail-section">
+                        <h5><i class="fas fa-dollar-sign me-2"></i>Payment Summary</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Total Amount Paid</span>
+                            <strong class="text-primary fs-4">$<span th:text="${#numbers.formatDecimal(booking.totalPrice, 1, 2)}"></span></strong>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/customer/dashboard}" class="btn btn-outline-primary flex-fill"><i class="fas fa-arrow-left me-2"></i>Back to Dashboard</a>
+                        <a th:if="${booking.status == 'PENDING'}" th:href="@{/customer/payment/booking/{id}(id=${booking.id})}" class="btn btn-success flex-fill"><i class="fas fa-credit-card me-2"></i>Pay Now</a>
+                        <form th:if="${canCancel}" th:action="@{/customer/booking/cancel/{id}(id=${booking.id})}" method="post" class="flex-fill">
+                            <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to cancel this booking?')"><i class="fas fa-times-circle me-2"></i>Cancel Booking</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

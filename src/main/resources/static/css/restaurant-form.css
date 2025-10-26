@@ -1,0 +1,162 @@
+/* Restaurant Form CSS */
+body {
+    background: #f5f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.form-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px 30px;
+}
+
+.form-header h4 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.form-body {
+    padding: 30px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.required {
+    color: #dc3545;
+}
+
+.form-control, .form-select {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 15px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+}
+
+/* Category Pills */
+.category-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.category-pill {
+    padding: 12px 24px;
+    border: 2px solid;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.category-pill input[type="radio"] {
+    display: none;
+}
+
+.category-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.pill-appetizers {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+.pill-appetizers:has(input:checked) {
+    background: #ff6b6b;
+    color: white;
+}
+
+.pill-main {
+    border-color: #4ecdc4;
+    color: #4ecdc4;
+}
+
+.pill-main:has(input:checked) {
+    background: #4ecdc4;
+    color: white;
+}
+
+.pill-desserts {
+    border-color: #ffd93d;
+    color: #f39c12;
+}
+
+.pill-desserts:has(input:checked) {
+    background: #ffd93d;
+    color: #f39c12;
+}
+
+.pill-beverages {
+    border-color: #a29bfe;
+    color: #6c5ce7;
+}
+
+.pill-beverages:has(input:checked) {
+    background: #a29bfe;
+    color: white;
+}
+
+/* Image Upload */
+.image-upload-box {
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.image-upload-box:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.image-upload-box i {
+    color: #667eea;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+}
+
+.btn-secondary {
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+}

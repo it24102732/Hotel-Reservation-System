@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Reservation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/reservations.css}">
+</head>
+<body>
+<div class="dashboard-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a th:href="@{/dashboard}" class="logo-container">
+                <i class="bi bi-building" style="font-size: 2rem;"></i><h4>Luxury Hotel</h4>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a th:href="@{/dashboard}"><i class="bi bi-grid-1x2"></i> <span>Dashboard</span></a></li>
+            <li class="active"><a th:href="@{/reservations}"><i class="bi bi-calendar-check"></i> <span>Reservations</span></a></li>
+            <li><a th:href="@{/housekeeping}"><i class="bi bi-house"></i> <span>Housekeeping</span></a></li>
+            <li><a th:href="@{/finance}"><i class="bi bi-cash-coin"></i> <span>Finance</span></a></li>
+            <li><a th:href="@{/rooms}"><i class="bi bi-door-closed"></i><span>Rooms</span></a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <header class="dashboard-header">
+            <div>
+                <h2 th:text="'Edit Booking #' + ${booking.id}"></h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/reservations}">Reservations</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Edit Booking</li>
+                    </ol>
+                </nav>
+            </div>
+            <a th:href="@{/reservations}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </a>
+        </header>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i><span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-white">
+                        <h6 class="m-0 fw-bold text-primary">Reservation Details</h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- FIXED: Show room status -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Guest:</strong>
+                                <p th:text="${booking.user.name}">John Doe</p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Room:</strong>
+                                <p th:if="${booking.room != null}" th:text="${booking.room.roomNumber + ' (' + booking.room.type + ')'}">101</p>
+                                <div th:if="${booking.room == null}" class="alert alert-warning py-2 px-3 mb-0">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    <strong>Room Type: <span th:text="${booking.roomType}">-</span></strong><br>
+                                    <small>⚠️ Room not yet assigned - Please assign below</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form th:action="@{/reservations/{id}/update(id=${booking.id})}" method="post">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Check-In Date</label>
+                                    <input type="date" name="checkInDate" class="form-control"
+                                           th:value="${booking.checkInDate}"
+                                           th:disabled="${booking.status != 'PENDING'}" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Check-Out Date</label>
+                                    <input type="date" name="checkOutDate" class="form-control"
+                                           th:value="${booking.checkOutDate}"
+                                           th:disabled="${booking.status != 'PENDING'}" />
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" th:if="${booking.status == 'PENDING'}">
+                                <i class="bi bi-save me-2"></i>Save Date Changes
+                            </button>
+
+                            <div th:unless="${booking.status == 'PENDING'}" class="form-text text-muted">
+                                <i class="bi bi-info-circle-fill me-1"></i>Dates can only be changed for PENDING bookings.
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <!-- ROOM ASSIGNMENT/REASSIGNMENT CARD -->
+                <div class="card shadow mb-4" th:if="${booking.status != 'CANCELLED' and booking.status != 'CHECKED_OUT'}">
+                    <div class="card-header"
+                         th:classappend="${needsRoomAssignment} ? 'bg-warning text-dark' : 'bg-white'">
+                        <h6 class="m-0 fw-bold"
+                            th:classappend="${needsRoomAssignment} ? 'text-dark' : 'text-primary'">
+                            <i th:class="${needsRoomAssignment} ? 'bi bi-exclamation-triangle' : 'bi bi-door-open'"></i>
+                            <span th:text="${needsRoomAssignment} ? ' Assign Room (REQUIRED)' : ' Re-assign Room'"></span>
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/reservations/{id}/reassign-room(id=${booking.id})}" method="post">
+                            <div th:if="${needsRoomAssignment}" class="alert alert-info mb-3">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <small>This booking requires room assignment before check-in.</small>
+                            </div>
+
+                            <label class="form-label">
+                                <span th:text="${needsRoomAssignment} ? 'Select a ' + ${booking.roomType} + ' room:' : 'Select a new room of the same type:'"></span>
+                            </label>
+
+                            <div class="input-group">
+                                <select class="form-select" name="newRoomId" required>
+                                    <option value="">Choose a room...</option>
+                                    <option th:each="room : ${availableRooms}"
+                                            th:value="${room.id}"
+                                            th:text="${room.roomNumber + ' (' + room.type + ') - $' + room.price + '/night'}">
+                                        101 (Single) - $50.00/night
+                                    </option>
+                                </select>
+                                <button type="submit" class="btn"
+                                        th:classappend="${needsRoomAssignment} ? 'btn-warning' : 'btn-primary'">
+                                    <i th:class="${needsRoomAssignment} ? 'bi bi-check-circle' : 'bi bi-arrow-repeat'"></i>
+                                    <span th:text="${needsRoomAssignment} ? ' Assign' : ' Re-assign'"></span>
+                                </button>
+                            </div>
+
+                            <div th:if="${#lists.isEmpty(availableRooms)}" class="form-text text-danger mt-2">
+                                <i class="bi bi-x-circle me-1"></i>
+                                No rooms of type "<span th:text="${booking.roomType}"></span>" are available for the selected dates.
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- STATUS UPDATE CARD -->
+                <div class="card shadow mb-4" th:if="${booking.status != 'CANCELLED' and booking.status != 'CHECKED_OUT'}">
+                    <div class="card-header bg-white">
+                        <h6 class="m-0 fw-bold text-primary">Update Status</h6>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/reservations/{id}/update-status(id=${booking.id})}" method="post">
+                            <div class="input-group">
+                                <select class="form-select" name="status">
+                                    <option th:if="${booking.status == 'PENDING'}" value="CONFIRMED">
+                                        Confirm Booking
+                                    </option>
+                                    <option th:if="${booking.status == 'CONFIRMED'}" value="CHECKED_IN">
+                                        Check-In Guest
+                                    </option>
+                                    <option th:if="${booking.status == 'CHECKED_IN'}" value="CHECKED_OUT">
+                                        Check-Out Guest
+                                    </option>
+                                </select>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+
+                            <!-- Warning if trying to check in without room -->
+                            <div th:if="${booking.status == 'CONFIRMED' and booking.room == null}"
+                                 class="alert alert-warning mt-3 py-2 px-3 mb-0">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                <small>⚠️ Room must be assigned before check-in</small>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
